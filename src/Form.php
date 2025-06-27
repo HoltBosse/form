@@ -29,7 +29,7 @@ class Form implements JsonSerializable {
 			$this->json = file_get_contents($path);
 			$obj = json_decode($this->json);
 		} else {
-            throw new Exception("File {$path} not found or invalid data passed");
+            throw new Exception("File '{$path}' not found or invalid data passed");
 		}
 
 		if ($obj) {
