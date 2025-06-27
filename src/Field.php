@@ -1,6 +1,8 @@
 <?php
 namespace HoltBosse\Form;
 
+Use HoltBosse\Form\Input;
+
 // BASE CLASS FOR FIELDS
 class Field {
 	public $id;
@@ -57,21 +59,12 @@ class Field {
 		return true;
 	}
 
-    private function getVar($input) {
-        if (isset($_GET[$input])) {
-			return $_GET[$input];
-		} elseif (isset($_POST[$input])) {
-			return $_POST[$input];
-		}
-        return null;
-    }
-
 	public function isMissing() {
 		if ($this->in_repeatable_form ?? null) {
 			// value will be in array
-			$value = $this->getVar($this->name)[$this->index];
+			$value = Input::filter(Input::getVar($this->name)[$this->index], $this->filter);
 		} else {
-			$value = $this->getvar($this->name);
+			$value = Input::getvar($this->name, $this->filter);
 		}
 
 		if ($value===false && $this->required) {
@@ -88,7 +81,7 @@ class Field {
 	}
 
 	public function setFromSubmit() {
-		$value = $this->getvar($this->name);
+		$value = Input::getVar($this->name, $this->filter);
 		if (is_array($value)) {
 			$this->default = json_encode($value);
 		} else {
@@ -98,7 +91,7 @@ class Field {
 
 	public function setFromSubmitRepeatable($index=0) {
 		// index = index of repeated form inside repeatable
-		$raw_value_array = $this->getvar($this->name); // get raw array
+		$raw_value_array = Input::getVar($this->name, "ARRAYRAW"); // get raw array
 		$value = $raw_value_array[$index]; // get nth entry in raw array
 		$this->index = $index; // set repeatable field index for validation
 

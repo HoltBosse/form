@@ -4,6 +4,7 @@ namespace HoltBosse\Form;
 Use stdClass;
 Use Exception;
 Use JsonSerializable;
+Use HoltBosse\Form\Input;
 
 class Form implements JsonSerializable {
 	public $id;
@@ -137,18 +138,9 @@ class Form implements JsonSerializable {
 		}
 	}
 
-    private function getVar($input) {
-        if (isset($_GET[$input])) {
-			return $_GET[$input];
-		} elseif (isset($_POST[$input])) {
-			return $_POST[$input];
-		}
-        return null;
-    }
-
 	public function isSubmitted() {
 		if ($this->id) {
-			$formName = $this->getVar("form_" . $this->id);
+			$formName = Input::getVar("form_" . $this->id, "TEXT");
 			if ($formName) {
 				return true;
 			}
