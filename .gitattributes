@@ -1,0 +1,4 @@
+.github/          export-ignore
+/.editorconfig     export-ignore
+/.gitignore        export-ignore
+/phpstan.neon      export-ignore

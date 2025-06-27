@@ -1,0 +1,34 @@
+name: Check Tabs in Codebase
+
+on: [push]
+
+jobs:
+  check-tabs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find files with leading spaces
+        run: |
+          echo "🔍 Scanning for files with space-indented lines..."
+
+          OFFENDING_FILES=()
+          while IFS= read -r -d '' file; do
+            if grep -qP '^( )+' "$file"; then
+              echo "❌ File: $file"
+              grep -n -P '^( )+' "$file"
+              OFFENDING_FILES+=("$file")
+            fi
+          done < <(find . -type f \
+              ! -path "./.git/*" \
+              ! -name "*.yml" ! -name "*.md" \
+              -print0)
+
+          echo ""
+          COUNT=${#OFFENDING_FILES[@]}
+          if [ "$COUNT" -gt 0 ]; then
+            echo "🚫 $COUNT file(s) contain lines that use spaces for indentation."
+            exit 1
+          else
+            echo "✅ All files use tab indentation as expected."
+          fi

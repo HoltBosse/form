@@ -1,0 +1,12 @@
+{
+    "name": "holtbosse/form",
+    "description": "library for creating forms from json and php",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Holtbosse\\Form\\": "src/"
+        }
+    },
+    "require": {}
+}
