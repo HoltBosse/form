@@ -5,8 +5,10 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Holtbosse\\Form\\": "src/"
+            "HoltBosse\\Form\\": "src/"
         }
     },
-    "require": {}
+    "require-dev": {
+        "phpstan/phpstan": "^2.1"
+    }
 }
