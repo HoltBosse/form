@@ -3,16 +3,16 @@ namespace HoltBosse\Form;
 
 class Input {
 	static public function stringURLSafe($string) {
-        //remove any '-' from the string they will be used as concatonater
-        $str = str_replace('-', ' ', $string);
+		//remove any '-' from the string they will be used as concatonater
+		$str = str_replace('-', ' ', $string);
 		$str = str_replace('_', ' ', $string);
 		
-        // remove any duplicate whitespace, and ensure all characters are alphanumeric
-        $str = preg_replace(['/\s+/','/[^A-Za-z0-9\-]/'], ['-',''], $str);
+		// remove any duplicate whitespace, and ensure all characters are alphanumeric
+		$str = preg_replace(['/\s+/','/[^A-Za-z0-9\-]/'], ['-',''], $str);
 
-        // lowercase and trim
-        $str = trim(strtolower($str));
-        return $str;
+		// lowercase and trim
+		$str = trim(strtolower($str));
+		return $str;
 	}
 
 	//this method exists so that if any future improvements are to be made, it is easy to do in one place

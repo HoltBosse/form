@@ -14,7 +14,7 @@ class Form implements JsonSerializable {
 	public $repeatable;
 	public $formPath;
 
-    private static $fieldRegistry = [];
+	private static $fieldRegistry = [];
 
 	function __construct($path, $repeatable=false) {
 		$this->fields = [];
@@ -60,23 +60,23 @@ class Form implements JsonSerializable {
 		}
 	}
 
-    /**
-        * register a classname by its type string
-    */
-    public static function registerField($type, $class) {
-        self::$fieldRegistry[$type] = $class;
-    }
+	/**
+		* register a classname by its type string
+	*/
+	public static function registerField($type, $class) {
+		self::$fieldRegistry[$type] = $class;
+	}
 
-    /**
-        * register an type aliased to another (existing!) type
-    */
-    public static function registerFieldAlias($aliasType, $type) {
-        if(!self::$fieldRegistry[$type]) {
-            throw new Exception("Field type '{$type}' not registered when trying to register alias '{$aliasType}'");
-        }
+	/**
+		* register an type aliased to another (existing!) type
+	*/
+	public static function registerFieldAlias($aliasType, $type) {
+		if(!self::$fieldRegistry[$type]) {
+			throw new Exception("Field type '{$type}' not registered when trying to register alias '{$aliasType}'");
+		}
 
-        self::$fieldRegistry[$aliasType] = self::$fieldRegistry[$type];
-    }
+		self::$fieldRegistry[$aliasType] = self::$fieldRegistry[$type];
+	}
 
 	public function setFieldRequiredBasedOnLogic($field) {
 		// logic here mirrors that of js section in 'display' function in this class
@@ -134,7 +134,7 @@ class Form implements JsonSerializable {
 		if (isset($this->fields[$fieldName])) {
 			return $this->fields[$fieldName];
 		} else {
-            throw new Exception('Unable to load form field ' . $fieldName);
+			throw new Exception('Unable to load form field ' . $fieldName);
 		}
 	}
 
@@ -223,29 +223,29 @@ class Form implements JsonSerializable {
 		ob_start();
 		?>
 			<div style='font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 16px; padding: 0; margin: 0;'>
-            <table style="padding: 0; margin: 0; border-spacing: 0px; background-color: lightgrey;">
-                <tbody>
-                    <tr style="height: 25px;"></tr>
-                    <tr>
-                        <td style="width: 50px;"></th>
-                        <td style="width: 500px; padding: 25px; background-color: white; border-radius: 0px;">
-                            <br>
-                            <div style="text-align: center;">
-                                <a href="<?php echo "https://" . $_SERVER['SERVER_NAME']; ?>">
-                                    <img src="<?php echo $bannerImage; ?>" alt="Logo" style="width: 300px;">
-                                </a>
-                            </div>
-                            <br>
-							<div style="text-align: left; font-weight: normal;">
-                            	<?php echo $body; ?>
+			<table style="padding: 0; margin: 0; border-spacing: 0px; background-color: lightgrey;">
+				<tbody>
+					<tr style="height: 25px;"></tr>
+					<tr>
+						<td style="width: 50px;"></th>
+						<td style="width: 500px; padding: 25px; background-color: white; border-radius: 0px;">
+							<br>
+							<div style="text-align: center;">
+								<a href="<?php echo "https://" . $_SERVER['SERVER_NAME']; ?>">
+									<img src="<?php echo $bannerImage; ?>" alt="Logo" style="width: 300px;">
+								</a>
 							</div>
-                        </th>
-                        <td style="width: 50px; "></th>
-                    </tr>
-                    <tr style="height: 25px;"></tr>
-                </tbody>
-            </table>
-        </div>    
+							<br>
+							<div style="text-align: left; font-weight: normal;">
+								<?php echo $body; ?>
+							</div>
+						</th>
+						<td style="width: 50px; "></th>
+					</tr>
+					<tr style="height: 25px;"></tr>
+				</tbody>
+			</table>
+		</div>    
 		<?php
 		return ob_get_clean();
 	}
