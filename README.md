@@ -1,5 +1,5 @@
-# HoltBosse Form library
+# HoltBosse Form Library
 
-work in progress
+Work in progress.
 
-adds form fields to convert php to html form fields. in combination with the form class this also representing and html form as json
+This library facilitates the conversion of PHP to HTML form fields. When used with the form class, it also allows for the representation of an HTML form as JSON.
