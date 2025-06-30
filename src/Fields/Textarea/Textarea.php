@@ -4,7 +4,7 @@ namespace HoltBosse\Form\Fields\Textarea;
 Use HoltBosse\Form\Field;
 Use HoltBosse\Form\Input;
 
-class TextArea extends Field {
+class Textarea extends Field {
 
 	public $maxlength;
 	public $minlength;
