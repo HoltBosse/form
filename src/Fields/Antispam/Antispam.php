@@ -21,7 +21,6 @@ class Antispam extends Field {
 		$this->id = "";
 		$this->name = "";
 		$this->default = $default_content;
-		$this->content_type="";
 		$this->nowrap = true;
 		$this->save=false;
 		$this->blacklist_location = null; // relative to CMS root
@@ -60,9 +59,9 @@ class Antispam extends Field {
 		$inBlacklist = false;
 		if ($this->use_blacklist) {
 			if ($this->blacklist_location) {
-				if (is_file(CMSPATH . $this->blacklist_location)) {
+				if (is_file($this->blacklist_location)) {
 					// check for exact match of lower case value in each line
-					$file = fopen(CMSPATH . $this->blacklist_location, "r");
+					$file = fopen($this->blacklist_location, "r");
 
 					$search_string = strtolower($value);
 

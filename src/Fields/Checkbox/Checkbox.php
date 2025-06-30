@@ -11,6 +11,7 @@ class Checkbox extends Field {
 				echo "<input type='hidden' data-logicignore value='0' {$this->getRenderedName()} {$this->getRenderedForm()}>"; // ensure submitted value
 				$required="";
 				if ($this->required) {$required=" required ";}
+				$checked = "";
 				if ($this->default) {$checked=" checked=checked ";} // 0 value stored for unchecked
 				echo "<input $checked value='1' type='checkbox' id='{$this->id}' {$this->getRenderedName()} {$this->getRenderedForm()}>";
 				echo "&nbsp;" . $this->label;
@@ -36,7 +37,7 @@ class Checkbox extends Field {
 	}
 
 	public function validate() {
-		if ($this->is_missing()) {
+		if ($this->isMissing()) {
 			return false;
 		}
 		return true;

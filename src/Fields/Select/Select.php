@@ -20,6 +20,7 @@ class Select extends Field {
 	public function display() {
 		$required="";
 		if ($this->required) {$required=" required ";}
+		$hidden = "";
 		if (property_exists($this,'attribute_list')) {
 			$attributes = implode(' ',$this->attribute_list);
 			if (in_array('hidden',$this->attribute_list)) {
@@ -90,7 +91,7 @@ class Select extends Field {
 									return reject('Please enter at least <?php echo $this->slimselect_ajax_minchar; ?> characters');
 								}
 
-								fetch('<?php $this->slimselect_ajax_url; ?>?searchterm=' + encodeURI(search)).then(function (response) {
+								fetch('<?php echo $this->slimselect_ajax_url; ?>?searchterm=' + encodeURI(search)).then(function (response) {
 									return response.json()
 								}).then(function (json) {
 									let data = [];
@@ -132,7 +133,7 @@ class Select extends Field {
 	}
 
 	public function validate() {
-		if ($this->is_missing()) {
+		if ($this->isMissing()) {
 			return false;
 		}
 		return true;

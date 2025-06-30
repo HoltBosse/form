@@ -12,6 +12,7 @@ class Textarea extends Field {
 	public $input_type;
 
 	public function display() {
+		$hidden = "";
 		if (property_exists($this,'attribute_list')) {
 			$attributes = implode(' ',$this->attribute_list);
 			if (in_array('hidden',$this->attribute_list)) {
@@ -43,8 +44,8 @@ class Textarea extends Field {
 		}
 	}
 
-	public function load_from_config($config) {
-		parent::load_from_config($config);
+	public function loadFromConfig($config) {
+		parent::loadFromConfig($config);
 		
 		$this->filter = $config->filter ?? 'TEXTAREA';
 		$this->input_type = $config->input_type ?? 'text';

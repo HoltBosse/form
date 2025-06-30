@@ -23,7 +23,7 @@ class Input extends Field {
 		$pattern="";
 		if ($this->pattern) {$pattern="pattern='{$this->pattern}'"; };
 		if ($this->required) {$required=" required ";}
-		if (property_exists($this,'attribute_list')) {
+		if ($this->attribute_list!="") {
 			$attributes = explode(' ',$this->attribute_list);
 			if (in_array('hidden',$attributes)) {
 				$hidden = "hidden";
@@ -42,11 +42,11 @@ class Input extends Field {
 					}
 				}
 				$minmax="";
-				if (property_exists($this,'min')) {
+				if (isset($this->min)) {
 					$minmax=" min='{$this->min}' max='{$this->max}' ";
 				}
 				$step="";
-				if (property_exists($this,'step')) {
+				if (isset($this->step)) {
 					$step=" step='{$this->step}' ";
 				}
 				$placeholder = $this->placeholder ?? "";
