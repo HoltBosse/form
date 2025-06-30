@@ -30,7 +30,7 @@ class Form implements JsonSerializable {
 			$this->json = file_get_contents($path);
 			$obj = json_decode($this->json);
 		} else {
-            throw new Exception("File '{$path}' not found or invalid data passed");
+			throw new Exception("File '{$path}' not found or invalid data passed");
 		}
 
 		if ($obj) {
@@ -39,9 +39,9 @@ class Form implements JsonSerializable {
 			$this->displayName = isset($obj->display_name) ? $obj->display_name : $this->id;
 			
 			foreach ($tempfields as $field_config) {
-                if(!self::$fieldRegistry[$field_config->type]) {
-                    throw new Exception("Field type '{$field_config->type}' not registered");
-                }
+				if(!self::$fieldRegistry[$field_config->type]) {
+					throw new Exception("Field type '{$field_config->type}' not registered");
+				}
 
 				$thisfield = new self::$fieldRegistry[$field_config->type]();
 				$thisfield->loadFromConfig($field_config);

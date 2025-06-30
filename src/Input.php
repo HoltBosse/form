@@ -21,7 +21,7 @@ class Input {
 		return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401);
 	}
 
-    static public function makeAlias($string) {
+	static public function makeAlias($string) {
 		$string = filter_var($string, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
 		$string = Input::stringURLSafe($string);
 		return $string;

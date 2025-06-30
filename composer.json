@@ -1,14 +1,14 @@
 {
-    "name": "holtbosse/form",
-    "description": "library for creating forms from json and php",
-    "type": "library",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "HoltBosse\\Form\\": "src/"
-        }
-    },
-    "require-dev": {
-        "phpstan/phpstan": "^2.1"
-    }
+	"name": "holtbosse/form",
+	"description": "library for creating forms from json and php",
+	"type": "library",
+	"license": "MIT",
+	"autoload": {
+		"psr-4": {
+			"HoltBosse\\Form\\": "src/"
+		}
+	},
+	"require-dev": {
+		"phpstan/phpstan": "^2.1"
+	}
 }
