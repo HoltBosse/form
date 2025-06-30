@@ -1,0 +1,60 @@
+<?php
+namespace HoltBosse\Form\Fields\Textarea;
+
+Use HoltBosse\Form\Field;
+Use HoltBosse\Form\Input;
+
+class TextArea extends Field {
+
+	public $maxlength;
+	public $minlength;
+	public $select_options;
+	public $input_type;
+
+	public function display() {
+		if (property_exists($this,'attribute_list')) {
+			$attributes = implode(' ',$this->attribute_list);
+			if (in_array('hidden',$this->attribute_list)) {
+				$hidden = "hidden";
+			}
+		}
+		$required="";
+		if ($this->required) {$required=" required ";}
+		echo "<div class='field {$required} {$hidden}'>";
+			echo "<label for='{$this->id}' class='label'>{$this->label}</label>";
+			$dataValueSafe = Input::stringHtmlSafe(htmlspecialchars_decode($this->default));
+			echo "<div class='control' data-value='{$dataValueSafe}'>";
+				$this->default = str_replace("[NEWLINE]","\n",$this->default);
+				echo "<textarea oninput='this.parentNode.dataset.value = this.value;' type='{$this->input_type}' maxlength={$this->maxlength} placeholder='{$this->placeholder}' minlength={$this->minlength} class='filter_{$this->filter} input autogrowingtextarea' {$required} type='text' id='{$this->id}' {$this->getRenderedName()} {$this->getRenderedForm()}>";
+				echo $this->default;
+				echo "</textarea>";
+			echo "</div>";
+			if ($this->description) {
+				echo "<p class='help'>" . $this->description . "</p>";
+			}
+		echo "</div>";
+	}
+
+	public function get_friendly_value($helpful_info) {
+		if($this->filter=="RAW" && $helpful_info && $helpful_info->return_in_text_form!=true) {
+			return Input::stringHtmlSafe($this->default);
+		} else {
+			return $this->default;
+		}
+	}
+
+	public function load_from_config($config) {
+		parent::load_from_config($config);
+		
+		$this->filter = $config->filter ?? 'TEXTAREA';
+		$this->input_type = $config->input_type ?? 'text';
+	}
+
+	public function validate() {
+		// TODO: enhance validation
+		if ($this->isMissing()) {
+			return false;
+		}
+		return true;
+	}
+}
