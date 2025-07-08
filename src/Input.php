@@ -3,9 +3,15 @@ namespace HoltBosse\Form;
 
 class Input {
 	static public function stringURLSafe($string) {
+		//lowercase the string
+		$str = strtolower($string);
+
 		//remove any '-' from the string they will be used as concatonater
-		$str = str_replace('-', ' ', $string);
-		$str = str_replace('_', ' ', $string);
+		$str = str_replace('-', ' ', $str);
+		$str = str_replace('_', ' ', $str);
+
+		//trim any whitespace from the start and end of the string
+		$str = trim($str);
 		
 		// remove any duplicate whitespace, and ensure all characters are alphanumeric
 		$str = preg_replace(['/\s+/','/[^A-Za-z0-9\-]/'], ['-',''], $str);
@@ -22,7 +28,8 @@ class Input {
 	}
 
 	static public function makeAlias($string) {
-		$string = filter_var($string, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+		$string = strip_tags($string);
+		$string = preg_replace('/[\x00-\x1F\x7F]/u', '', $string); // Remove low ASCII chars
 		$string = Input::stringURLSafe($string);
 		return $string;
 	}

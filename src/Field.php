@@ -64,7 +64,7 @@ class Field {
 			// value will be in array
 			$value = Input::filter(Input::getVar($this->name)[$this->index], $this->filter);
 		} else {
-			$value = Input::getvar($this->name, $this->filter);
+			$value = Input::getVar($this->name, $this->filter);
 		}
 
 		if ($value===false && $this->required) {
