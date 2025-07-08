@@ -28,7 +28,8 @@ class Input {
 	}
 
 	static public function makeAlias($string) {
-		$string = filter_var($string, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+		$string = strip_tags($string);
+		$string = preg_replace('/[\x00-\x1F\x7F]/u', '', $string); // Remove low ASCII chars
 		$string = Input::stringURLSafe($string);
 		return $string;
 	}
