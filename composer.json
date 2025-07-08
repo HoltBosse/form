@@ -9,6 +9,12 @@
 		}
 	},
 	"require-dev": {
-		"phpstan/phpstan": "^2.1"
+		"phpstan/phpstan": "^2.1",
+		"pestphp/pest": "^3.8"
+	},
+	"config": {
+		"allow-plugins": {
+			"pestphp/pest-plugin": true
+		}
 	}
 }
