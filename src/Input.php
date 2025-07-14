@@ -34,6 +34,20 @@ class Input {
 		return $string;
 	}
 
+	static public function tuplesToAssoc($arr) {
+		if (is_array($arr)) {
+			$result = [];
+			foreach ($arr as $i) {
+				if ($i['value'] !== false && $i['value'] !== null && $i['value'] !== '') {
+					$result[$i['key']] = $i['value'];
+				}
+			}
+			return $result;
+		} else {
+			return [];
+		}
+	}
+
 	public static function getVar($input, $filter='RAW', $default=NULL) {
 		if (isset($_GET[$input])) {
 			return Input::filter($_GET[$input], $filter);

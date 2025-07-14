@@ -47,4 +47,92 @@ describe('Input', function () {
 				->toBe('foo-bar-baz');
 		});
 	});
+
+	describe('::tuplesToAssoc', function () {
+		it('converts array of tuples to associative array', function () {
+			$input = [
+				['key' => 'name', 'value' => 'John'],
+				['key' => 'email', 'value' => 'john@example.com'],
+				['key' => 'age', 'value' => '25']
+			];
+			$expected = [
+				'name' => 'John',
+				'email' => 'john@example.com',
+				'age' => '25'
+			];
+			expect(Input::tuplesToAssoc($input))
+				->toBe($expected);
+		});
+
+		it('filters out empty string values', function () {
+			$input = [
+				['key' => 'name', 'value' => 'John'],
+				['key' => 'email', 'value' => ''],
+				['key' => 'age', 'value' => '25']
+			];
+			$expected = [
+				'name' => 'John',
+				'age' => '25'
+			];
+			expect(Input::tuplesToAssoc($input))
+				->toBe($expected);
+		});
+
+		it('filters out null values', function () {
+			$input = [
+				['key' => 'name', 'value' => 'John'],
+				['key' => 'email', 'value' => null],
+				['key' => 'age', 'value' => '25']
+			];
+			$expected = [
+				'name' => 'John',
+				'age' => '25'
+			];
+			expect(Input::tuplesToAssoc($input))
+				->toBe($expected);
+		});
+
+		it('filters out false values', function () {
+			$input = [
+				['key' => 'name', 'value' => 'John'],
+				['key' => 'active', 'value' => false],
+				['key' => 'age', 'value' => '25']
+			];
+			$expected = [
+				'name' => 'John',
+				'age' => '25'
+			];
+			expect(Input::tuplesToAssoc($input))
+				->toBe($expected);
+		});
+
+		it('includes zero values', function () {
+			$input = [
+				['key' => 'name', 'value' => 'John'],
+				['key' => 'count', 'value' => 0],
+				['key' => 'score', 'value' => '0']
+			];
+			$expected = [
+				'name' => 'John',
+				'count' => 0,
+				'score' => '0'
+			];
+			expect(Input::tuplesToAssoc($input))
+				->toBe($expected);
+		});
+
+		it('returns empty array for non-array input', function () {
+			expect(Input::tuplesToAssoc('not an array'))
+				->toBe([]);
+			expect(Input::tuplesToAssoc(null))
+				->toBe([]);
+			expect(Input::tuplesToAssoc(123))
+				->toBe([]);
+		});
+
+		it('handles empty array input', function () {
+			expect(Input::tuplesToAssoc([]))
+				->toBe([]);
+		});
+	});
 });
