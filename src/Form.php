@@ -78,6 +78,10 @@ class Form implements JsonSerializable {
 		self::$fieldRegistry[$aliasType] = self::$fieldRegistry[$type];
 	}
 
+	public static function getFieldClass($type) {
+		return self::$fieldRegistry[$type];
+	}
+
 	public function setFieldRequiredBasedOnLogic($field) {
 		// logic here mirrors that of js section in 'display' function in this class
 		// algorithm is essentially:
