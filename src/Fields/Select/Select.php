@@ -15,6 +15,7 @@ class Select extends Field {
 	public $slimselect_ajax_minchar;
 	public $slimselect_ajax_maxchar;
 	public $slimselect_ajax_url;
+	public $slimselect_settings;
 	public $empty_string;
 
 	public function display() {
@@ -108,6 +109,9 @@ class Select extends Field {
 						},
 					},
 					<?php endif; ?>
+					<?php if($this->slimselect_settings): ?>
+					settings: <?php echo $this->slimselect_settings; ?>
+					<?php endif; ?>
 				});
 			</script>
 		<?php
@@ -124,6 +128,7 @@ class Select extends Field {
 		$this->slimselect_ajax = $config->slimselect_ajax ?? false;
 		$this->slimselect_ajax_url = $config->slimselect_ajax_url ?? "";
 		$this->slimselect_ajax_minchar = $config->slimselect_ajax_minchar ?? 3;
+		$this->slimselect_settings = $config->slimselect_settings ?? null;
 		if ($this->multiple) {
 			$this->filter = $config->filter ?? 'ARRAYOFSTRING';
 		}
