@@ -5,7 +5,7 @@ Use HoltBosse\Form\Field;
 
 class Checkbox extends Field {
 
-	public function display() {
+	public function display(): void {
 		echo "<div class='field'>";
 			echo "<label for='{$this->id}' class='checkbox'>";
 				echo "<input type='hidden' data-logicignore value='0' {$this->getRenderedName()} {$this->getRenderedForm()}>"; // ensure submitted value
@@ -22,7 +22,7 @@ class Checkbox extends Field {
 		echo "</div>";
 	}
 
-	public function getFriendlyValue($helpful_info) {
+	public function getFriendlyValue(mixed $helpful_info): string {
 		$checked="";
 		if ($this->default==1) {
 			$checked=" checked ";
@@ -30,13 +30,13 @@ class Checkbox extends Field {
 		return "<input type='checkbox' disabled {$checked}>";
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(object $config): void {
 		parent::loadFromConfig($config);
 		
 		$this->filter = $config->filter ?? 'NUMBER';
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		if ($this->isMissing()) {
 			return false;
 		}

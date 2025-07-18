@@ -6,19 +6,19 @@ Use HoltBosse\Form\Input;
 
 class Select extends Field {
 
-	public $select_options;
-	public $config;
-	public $slimselect;
-	public $multiple;
-	public $placeholder;
-	public $slimselect_ajax;
-	public $slimselect_ajax_minchar;
-	public $slimselect_ajax_maxchar;
-	public $slimselect_ajax_url;
-	public $slimselect_settings;
-	public $empty_string;
+	public mixed $select_options;
+	public mixed $config;
+	public bool $slimselect;
+	public bool $multiple;
+	public string $placeholder;
+	public bool $slimselect_ajax;
+	public int $slimselect_ajax_minchar;
+	public int $slimselect_ajax_maxchar;
+	public string $slimselect_ajax_url;
+	public string $slimselect_settings;
+	public string $empty_string;
 
-	public function display() {
+	public function display(): void {
 		$required="";
 		if ($this->required) {$required=" required ";}
 		$hidden = "";
@@ -118,7 +118,7 @@ class Select extends Field {
 		endif;
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(object $config): void {
 		parent::loadFromConfig($config);
 		
 		$this->select_options = $config->select_options ?? [];
@@ -137,7 +137,7 @@ class Select extends Field {
 		}
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		if ($this->isMissing()) {
 			return false;
 		}
