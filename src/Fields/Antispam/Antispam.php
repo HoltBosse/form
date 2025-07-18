@@ -6,18 +6,15 @@ Use HoltBosse\Form\Input;
 
 /* Note: this field does NOT currently support checking fields/names within a repeatable form section */
 class Antispam extends Field {
+	public ?string $blacklist_location;
+	public bool $use_blacklist;
+	public string $fieldname;
+	public mixed $block_urls;
+	public bool $charset_check;
+	public bool $ends_with_ru_check;
+	public bool $bbcode_url_check;
 
-	public $nowrap;
-	public $save;
-	public $blacklist_location;
-	public $use_blacklist;
-	public $fieldname;
-	public $block_urls;
-	public $charset_check;
-	public $ends_with_ru_check;
-	public $bbcode_url_check;
-
-	function __construct($default_content="") {
+	function __construct(string $default_content="") {
 		$this->id = "";
 		$this->name = "";
 		$this->default = $default_content;
@@ -26,11 +23,11 @@ class Antispam extends Field {
 		$this->blacklist_location = null; // relative to CMS root
 	}
 
-	public function display() {
+	public function display(): void {
 		echo "<!-- https://giphy.com/gifs/artists-on-tumblr-foxadhd-xLhloTgdu7i92 -->";
 	}
 
-	public static function endsWithRu($string) {
+	public static function endsWithRu(string $string): bool {
 		$length = strlen($string);
 		$ruLength = strlen('.ru');
 		if ($length < $ruLength) {
@@ -41,7 +38,7 @@ class Antispam extends Field {
 		return $offsetString === '.ru';
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(object $config): void {
 		parent::loadFromConfig($config);
 
 		$this->filter = $config->filter ?? 'STRING';
@@ -54,7 +51,7 @@ class Antispam extends Field {
 		$this->bbcode_url_check = $config->bbcode_url_check ?? false;
 	}
 
-	private function inBlacklist ($value) {
+	private function inBlacklist(string $value): bool {
 		// check blacklist file for value - case insensitive 
 		$inBlacklist = false;
 		if ($this->use_blacklist) {
@@ -82,7 +79,7 @@ class Antispam extends Field {
 		return $inBlacklist;
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		// safety net for repeatables
 		if ($this->in_repeatable_form ?? null) {
 			return true; // cannot determine if invalid for now, assume good

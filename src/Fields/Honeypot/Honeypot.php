@@ -5,12 +5,10 @@ Use HoltBosse\Form\Field;
 
 class Honeypot extends Field {
 
-	public $html;
-	public $save;
-	public $maxlength;
-	public $autocomplete;
+	public string $html;
+	public mixed $autocomplete;
 
-	public function display() {
+	public function display(): void {
 		// autocomplete attribute set to nonsense which is calculated to be same as 'off' without being explicit
 		// tabindex is required as -1 for accessibility reasons, so might tip off some bots, but can't hurt screen readers etc
 		// set value to be ' ' (space) - allows us to use 'required' client-side, but whitespace might be more enticing to replace 
@@ -29,7 +27,7 @@ class Honeypot extends Field {
 		<?php
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(object $config): void {
 		parent::loadFromConfig($config);
 		
 		$this->filter = $config->filter ?? 'STRING';
@@ -37,7 +35,7 @@ class Honeypot extends Field {
 		$this->autocomplete = $config->autocomplete ?? "nothingtoseehere";
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		if ($this->default!==" ") {
 			return false;
 		} else {

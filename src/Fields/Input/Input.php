@@ -5,19 +5,17 @@ Use HoltBosse\Form\Field;
 Use HoltBosse\Form\Input as coreInput;
 
 class Input extends Field {
+	public string $pattern;
+	public string $input_type;
+	public int $min;
+	public int $max;
+	public mixed $attribute_list;
+	public mixed $step;
+	public mixed $icon_status;
+	public mixed $icon_parent_class;
+	public mixed $icon_markup;
 
-	public $select_options;
-	public $pattern;
-	public $input_type;
-	public $min;
-	public $max;
-	public $attribute_list;
-	public $step;
-	public $icon_status;
-	public $icon_parent_class;
-	public $icon_markup;
-
-	public function display() {
+	public function display(): void {
 		$hidden = "";
 		$required="";
 		$pattern="";
@@ -62,7 +60,7 @@ class Input extends Field {
 		echo "</div>";
 	}
 
-	public function getFriendlyValue($helpful_info) {
+	public function getFriendlyValue(mixed $helpful_info): string {
 		if($this->filter=="RAW" && $helpful_info && $helpful_info->return_in_text_form!=true) {
 			return coreInput::stringHtmlSafe($this->default);
 		} else {
@@ -70,7 +68,7 @@ class Input extends Field {
 		}
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(object $config): void {
 		parent::loadFromConfig($config);
 		
 		$this->input_type = $config->input_type ?? 'text';
@@ -89,7 +87,7 @@ class Input extends Field {
 		$this->icon_markup = $config->icon_markup ?? "";
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		// TODO: enhance validation
 		if ($this->isMissing() || mb_strlen($this->default)>$this->maxlength) {
 			return false;

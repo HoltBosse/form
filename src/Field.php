@@ -5,33 +5,33 @@ Use HoltBosse\Form\Input;
 
 // BASE CLASS FOR FIELDS
 class Field {
-	public $id;
-	public $title;
-	public $label;
-	public $name; // unique id for form submit
-	public $description;
-	public $required;
-	public $valid;
-	public $default;
-	public $filter;
-	public $type;
-	public $logic;
-	public $missingconfig;
-	public $in_repeatable_form;
-	public $maxlength;
-	public $minlength;
-	public $save;
-	public $placeholder;
-	public $nowrap;
-	public $form;
-	public $index; // used to determine POST/GET array index in repeatables
+	public string $id;
+	public string $title;
+	public string $label;
+	public string $name; // unique id for form submit
+	public string $description;
+	public bool $required;
+	public mixed $valid;
+	public mixed $default;
+	public string $filter;
+	public mixed $type;
+	public mixed $logic;
+	public mixed $missingconfig;
+	public ?bool $in_repeatable_form;
+	public int $maxlength;
+	public int $minlength;
+	public bool $save;
+	public string $placeholder;
+	public bool $nowrap;
+	public mixed $form;
+	public int $index; // used to determine POST/GET array index in repeatables
 
-	public function display() {
+	public function display(): void {
 		echo "<label class='label'>Field Label</label>";
 		echo "<p>Hello, I am a field!</p>";
 	}
 
-	public function getRenderedName($multiple=false) {
+	public function getRenderedName(bool $multiple=false): string {
 		// output name as array if in repeatable form
 		// multiple makes it an array of arrays :D -> [][]
 		$rendered_name = ' name="' . $this->name;
@@ -47,7 +47,7 @@ class Field {
 		return $rendered_name;
 	}
 
-	public function getRenderedForm() {
+	public function getRenderedForm(): string {
 		if($this->form) {
 			return "form='$this->form'";
 		}
@@ -55,11 +55,11 @@ class Field {
 		return "";
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		return true;
 	}
 
-	public function isMissing() {
+	public function isMissing(): bool {
 		if ($this->in_repeatable_form ?? null) {
 			// value will be in array
 			$value = Input::filter(Input::getVar($this->name)[$this->index], $this->filter);
@@ -80,7 +80,7 @@ class Field {
 		return false;
 	}
 
-	public function setFromSubmit() {
+	public function setFromSubmit(): void{
 		$value = Input::getVar($this->name, $this->filter);
 		if (is_array($value)) {
 			$this->default = json_encode($value);
@@ -89,7 +89,7 @@ class Field {
 		}
 	}
 
-	public function setFromSubmitRepeatable($index=0) {
+	public function setFromSubmitRepeatable(int $index=0): void {
 		// index = index of repeated form inside repeatable
 		$raw_value_array = Input::getVar($this->name, "ARRAYRAW"); // get raw array
 		$value = $raw_value_array[$index]; // get nth entry in raw array
@@ -101,7 +101,7 @@ class Field {
 		}
 	}
 
-	public function getFriendlyValue($helpfulInfo) {
+	public function getFriendlyValue(mixed $helpfulInfo): string {
 		// return friendly (text) version of data represented by default/current value
 		// ostensibly used by 'list' item option in content listings for user driven columns
 		// helpful info can be anything, but something like the field config object
@@ -109,7 +109,7 @@ class Field {
 		return $this->default;
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(object $config): void {
 		// config is json field already converted to object by form class
 		$this->type = $config->type ?? 'error!!!';
 		$this->name = $config->name ?? 'error!!!';
@@ -119,7 +119,7 @@ class Field {
 		$this->required = $config->required ?? false;
 		$this->description = $config->description ?? '';
 		$this->filter = $config->filter ?? 'RAW';
-		$this->default = $config->default ?? $this->default;
+		$this->default = $config->default ?? null;
 		$this->maxlength = $config->maxlength ?? 99999;
 		$this->minlength = $config->minlength ?? 0;
 		$this->placeholder = $config->placeholder ?? "";

@@ -6,12 +6,11 @@ Use HoltBosse\Form\Input;
 
 class Textarea extends Field {
 
-	public $maxlength;
-	public $minlength;
-	public $select_options;
-	public $input_type;
+	public int $maxlength;
+	public int $minlength;
+	public string $input_type;
 
-	public function display() {
+	public function display(): void {
 		$hidden = "";
 		if (property_exists($this,'attribute_list')) {
 			$attributes = implode(' ',$this->attribute_list);
@@ -36,7 +35,7 @@ class Textarea extends Field {
 		echo "</div>";
 	}
 
-	public function get_friendly_value($helpful_info) {
+	public function get_friendly_value(mixed $helpful_info): string {
 		if($this->filter=="RAW" && $helpful_info && $helpful_info->return_in_text_form!=true) {
 			return Input::stringHtmlSafe($this->default);
 		} else {
@@ -44,14 +43,14 @@ class Textarea extends Field {
 		}
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(object $config): void {
 		parent::loadFromConfig($config);
 		
 		$this->filter = $config->filter ?? 'TEXTAREA';
 		$this->input_type = $config->input_type ?? 'text';
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		// TODO: enhance validation
 		if ($this->isMissing()) {
 			return false;

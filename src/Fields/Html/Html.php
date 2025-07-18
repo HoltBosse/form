@@ -4,13 +4,13 @@ namespace HoltBosse\Form\Fields\Html;
 Use HoltBosse\Form\Field;
 
 class Html extends Field {
-	public $html;
+	public string $html;
 
-	public function display() {
+	public function display(): void {
 		echo $this->html;
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(object $config): void {
 		parent::loadFromConfig($config);
 		
 		$this->html = $config->html ?? "";

@@ -2,7 +2,7 @@
 namespace HoltBosse\Form;
 
 class Input {
-	static public function stringURLSafe($string) {
+	static public function stringURLSafe(string $string): string {
 		//lowercase the string
 		$str = strtolower($string);
 
@@ -22,19 +22,19 @@ class Input {
 	}
 
 	//this method exists so that if any future improvements are to be made, it is easy to do in one place
-	static public function stringHtmlSafe($string) {
+	static public function stringHtmlSafe(string $string): string {
 		//for older php versions that convert only double quotes, we want to match modern php
 		return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401);
 	}
 
-	static public function makeAlias($string) {
+	static public function makeAlias(string $string): string {
 		$string = strip_tags($string);
 		$string = preg_replace('/[\x00-\x1F\x7F]/u', '', $string); // Remove low ASCII chars
 		$string = Input::stringURLSafe($string);
 		return $string;
 	}
 
-	static public function tuplesToAssoc($arr) {
+	static public function tuplesToAssoc(mixed $arr): mixed {
 		if (is_array($arr)) {
 			$result = [];
 			foreach ($arr as $i) {
@@ -48,7 +48,7 @@ class Input {
 		}
 	}
 
-	public static function getVar($input, $filter='RAW', $default=NULL) {
+	public static function getVar(mixed $input, string $filter='RAW', mixed $default=NULL): mixed {
 		if (isset($_GET[$input])) {
 			return Input::filter($_GET[$input], $filter);
 		} elseif (isset($_POST[$input])) {
@@ -62,7 +62,7 @@ class Input {
 		}
 	}
 
-	public static function filter($input, $filter='RAW') {
+	public static function filter(mixed $input, string $filter='RAW'): mixed {
 		$foo=$input;
 		if ($filter=="RAW") {
 			return $foo;
