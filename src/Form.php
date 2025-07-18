@@ -12,7 +12,7 @@ class Form implements JsonSerializable {
 	public mixed $fields;
 	public mixed $json;
 	public bool $repeatable;
-	public string $formPath;
+	public mixed $formPath;
 
 	private static mixed $fieldRegistry = [];
 

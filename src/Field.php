@@ -23,7 +23,7 @@ class Field {
 	public bool $save;
 	public string $placeholder;
 	public bool $nowrap;
-	public mixed $form;
+	public ?string $form;
 	public int $index; // used to determine POST/GET array index in repeatables
 
 	public function display(): void {
@@ -124,7 +124,7 @@ class Field {
 		$this->minlength = $config->minlength ?? 0;
 		$this->placeholder = $config->placeholder ?? "";
 		$this->logic = $config->logic ?? '';
-		$this->nowrap = $config->nowrap;
-		$this->form = $config->form;
+		$this->nowrap = $config->nowrap ?? false;
+		$this->form = $config->form ?? null;
 	}
 }
