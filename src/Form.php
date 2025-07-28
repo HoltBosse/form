@@ -134,6 +134,10 @@ class Form implements JsonSerializable {
 		}
 	}
 
+	public function fieldExists($fieldName) {
+		return isset($this->fields[$fieldName]);
+	}
+
 	public function getFieldByName($fieldName) {
 		if (isset($this->fields[$fieldName])) {
 			return $this->fields[$fieldName];
@@ -210,7 +214,7 @@ class Form implements JsonSerializable {
 					2. serialization logic not handling save field
 					3. serialization handling of fields without names
 				*/
-				if ($option->name!=='error!!!') {
+				if ($option->name!=='error!!!' && $this->fieldExists($option->name)) {
 					$field = $this->getFieldByName($option->name); 
 					if (is_object($field)) {
 						$field->default = $option->value;

@@ -49,8 +49,29 @@ test('Form loads fields from JSON and serializes correctly', function () {
 	$json = $form->serializeJson();
 	expect($json)->toBeJson();
 
+	//we create another form with a second field, and then try and load it into the first form without the extra field to make sure no exceptions happen
+	$formJsonInvalidField = $formJson;
+	$formJsonInvalidField["fields"][] = (object)[
+		'type' => 'FormTestJsonTestFakeText',
+		'name' => 'field2',
+		'label' => 'Field 2',
+	];
+
+	$jsonPathInvalidForm = __DIR__ . '/test_form_2.json';
+	file_put_contents($jsonPathInvalidForm, json_encode($formJsonInvalidField));
+
+	// Instantiate the Form
+	$formInvalidJson = new Form($jsonPathInvalidForm);
+
+	try {
+		$form->deserializeJson(json_encode($formInvalidJson));
+	} catch (Throwable $e) {
+		$this->fail('An exception was thrown deserializing json into form: ' . $e->getMessage());
+	}
+
 	// Clean up
 	unlink($jsonPath);
+	unlink($jsonPathInvalidForm);
 });
 
 test('Form getFieldByName returns the correct field', function () {
