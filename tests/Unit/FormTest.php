@@ -67,7 +67,7 @@ test('Form loads fields from JSON and serializes correctly', function () {
 		$form->deserializeJson(json_encode($formInvalidJson));
 	} catch (Throwable $e) {
 		$this->fail('An exception was thrown deserializing json into form: ' . $e->getMessage());
-    }
+	}
 
 	// Clean up
 	unlink($jsonPath);
