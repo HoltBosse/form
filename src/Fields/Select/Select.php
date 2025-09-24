@@ -123,8 +123,8 @@ class Select extends Field {
 		
 		$this->select_options = $config->select_options ?? [];
 		$this->empty_string = $config->empty_string ?? '';
-		$this->slimselect = $config->slimselect ?: false;
-		$this->multiple = $config->multiple ?: false;
+		$this->slimselect = isset($config->slimselect) ? $config->slimselect : false;
+		$this->multiple = isset($config->multiple) ? $config->multiple : false;
 		$this->slimselect_ajax = $config->slimselect_ajax ?? false;
 		$this->slimselect_ajax_url = $config->slimselect_ajax_url ?? "";
 		$this->slimselect_ajax_minchar = $config->slimselect_ajax_minchar ?? 3;

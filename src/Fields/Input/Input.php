@@ -83,7 +83,7 @@ class Input extends Field {
 			$this->max = $config->max ?? "";
 		}
 		$this->attribute_list = $config->attribute_list ?? "";
-		$this->step = $config->step;
+		$this->step = $config->step ?? null;
 		$this->icon_status = $config->icon_status ?? false;
 		$this->icon_parent_class = $config->icon_parent_class ?? "";
 		$this->icon_markup = $config->icon_markup ?? "";

@@ -124,7 +124,7 @@ class Field {
 		$this->minlength = $config->minlength ?? 0;
 		$this->placeholder = $config->placeholder ?? "";
 		$this->logic = $config->logic ?? '';
-		$this->nowrap = $config->nowrap;
-		$this->form = $config->form;
+		$this->nowrap = $config->nowrap ?? null;
+		$this->form = $config->form ?? null;
 	}
 }
