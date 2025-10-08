@@ -21,7 +21,7 @@ jobs:
             fi
           done < <(find . -type f \
               ! -path "./.git/*" \
-              ! -name "*.yml" ! -name "*.md" ! -name "*.xml" \
+              ! -name "*.yml" ! -name "*.md" ! -name "*.xml" ! -name "*.lock" \
               -print0)
 
           echo ""
