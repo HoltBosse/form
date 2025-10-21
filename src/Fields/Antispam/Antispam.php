@@ -3,6 +3,8 @@ namespace HoltBosse\Form\Fields\Antispam;
 
 Use HoltBosse\Form\Field;
 Use HoltBosse\Form\Input;
+Use HoltBosse\Form\FormBuilderAttribute;
+Use HoltBosse\Form\FormBuilderDataType;
 
 /* Note: this field does NOT currently support checking fields/names within a repeatable form section */
 class Antispam extends Field {
@@ -11,10 +13,14 @@ class Antispam extends Field {
 	public $save;
 	public $blacklist_location;
 	public $use_blacklist;
+	#[FormBuilderAttribute(fieldType: "Input", dataType: FormBuilderDataType::LetterString, required: false, label: "Field Name to Check")]
 	public $fieldname;
+	#[FormBuilderAttribute(fieldType: "Select", dataType: FormBuilderDataType::Bool, required: true)]
 	public $block_urls;
+	#[FormBuilderAttribute(fieldType: "Select", dataType: FormBuilderDataType::Bool, required: true, label: "Block Cyrillic characters")]
 	public $charset_check;
 	public $ends_with_ru_check;
+	#[FormBuilderAttribute(fieldType: "Select", dataType: FormBuilderDataType::Bool, required: true, label: "Block BBCode URLs", description: "Blocks [url=...] BBCode tags bots like to use")]
 	public $bbcode_url_check;
 
 	function __construct($default_content="") {
@@ -52,6 +58,7 @@ class Antispam extends Field {
 		$this->charset_check = $config->charset_check ?? false;
 		$this->ends_with_ru_check = $config->ends_with_ru_check ?? false;
 		$this->bbcode_url_check = $config->bbcode_url_check ?? false;
+		$this->save = $config->save ?? false;
 	}
 
 	private function inBlacklist ($value) {

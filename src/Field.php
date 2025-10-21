@@ -7,9 +7,12 @@ Use HoltBosse\Form\Input;
 class Field {
 	public $id;
 	public $title;
+	#[FormBuilderAttribute(fieldType: "Input", dataType: FormBuilderDataType::String, required: false)]
 	public $label;
+	#[FormBuilderAttribute(fieldType: "Input", dataType: FormBuilderDataType::LetterString, required: true, label: "Field Name (unique id)")]
 	public $name; // unique id for form submit
 	public $description;
+	#[FormBuilderAttribute(fieldType: "Select", dataType: FormBuilderDataType::Bool, required: true)]
 	public $required;
 	public $valid;
 	public $default;
