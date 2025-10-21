@@ -35,6 +35,7 @@ class Honeypot extends Field {
 		$this->filter = $config->filter ?? 'STRING';
 		$this->default = $config->default ?? $this->default;
 		$this->autocomplete = $config->autocomplete ?? "nothingtoseehere";
+		$this->save = $config->save ?? false;
 	}
 
 	public function validate() {

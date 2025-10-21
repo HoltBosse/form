@@ -2,14 +2,18 @@
 namespace HoltBosse\Form;
 
 Use HoltBosse\Form\Input;
+Use HoltBosse\Form\Fields\Input\Input as Text;
 
 // BASE CLASS FOR FIELDS
 class Field {
 	public $id;
 	public $title;
+	#[FormBuilderAttribute(fieldType: "Text", dataType: FormBuilderDataType::String, required: false)]
 	public $label;
+	#[FormBuilderAttribute(fieldType: "Text", dataType: FormBuilderDataType::LetterString, required: true, label: "Field Name (unique id)")]
 	public $name; // unique id for form submit
 	public $description;
+	#[FormBuilderAttribute(fieldType: "Select", dataType: FormBuilderDataType::Bool, required: true)]
 	public $required;
 	public $valid;
 	public $default;
