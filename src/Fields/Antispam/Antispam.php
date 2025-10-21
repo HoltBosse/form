@@ -13,7 +13,7 @@ class Antispam extends Field {
 	public $save;
 	public $blacklist_location;
 	public $use_blacklist;
-	#[FormBuilderAttribute(fieldType: "Text", dataType: FormBuilderDataType::LetterString, required: false, label: "Field Name to Check")]
+	#[FormBuilderAttribute(fieldType: "Input", dataType: FormBuilderDataType::LetterString, required: false, label: "Field Name to Check")]
 	public $fieldname;
 	#[FormBuilderAttribute(fieldType: "Select", dataType: FormBuilderDataType::Bool, required: true)]
 	public $block_urls;
