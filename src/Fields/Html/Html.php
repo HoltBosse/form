@@ -14,5 +14,6 @@ class Html extends Field {
 		parent::loadFromConfig($config);
 		
 		$this->html = $config->html ?? "";
+		$this->save = $config->save ?? false;
 	}
 }
