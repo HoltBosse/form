@@ -2,7 +2,7 @@
 namespace HoltBosse\Form;
 
 class Input {
-	static public function stringURLSafe($string) {
+	public static function stringURLSafe($string) {
 		//lowercase the string
 		$str = strtolower($string);
 
@@ -22,19 +22,39 @@ class Input {
 	}
 
 	//this method exists so that if any future improvements are to be made, it is easy to do in one place
-	static public function stringHtmlSafe($string) {
+	public static function stringHtmlSafe($string) {
 		//for older php versions that convert only double quotes, we want to match modern php
 		return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401);
 	}
 
-	static public function makeAlias($string) {
+	public static function sprintfHtmlSafe($format, ...$args) {
+		$safeArgs = array_map(function($arg) {
+			if (is_string($arg)) {
+				return self::stringHtmlSafe($arg);
+			} elseif (is_object($arg) && method_exists($arg, '__toString')) {
+				// Object with __toString, sanitize the string representation
+				return self::stringHtmlSafe((string) $arg);
+			} else {
+				return $arg;
+			}
+		}, $args);
+		return sprintf($format, ...$safeArgs);
+	}
+
+	public static function printfHtmlSafe($format, ...$args) {
+		$output = self::sprintfHtmlSafe($format, ...$args);
+		echo $output;
+		return strlen($output);
+	}
+
+	public static function makeAlias($string) {
 		$string = strip_tags($string);
 		$string = preg_replace('/[\x00-\x1F\x7F]/u', '', $string); // Remove low ASCII chars
 		$string = Input::stringURLSafe($string);
 		return $string;
 	}
 
-	static public function tuplesToAssoc($arr) {
+	public static function tuplesToAssoc($arr) {
 		if (is_array($arr)) {
 			$result = [];
 			foreach ($arr as $i) {
