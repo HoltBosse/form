@@ -215,4 +215,107 @@ describe('Input', function () {
 				->toBe([]);
 		});
 	});
+
+	describe('::buildValidatorFromArray', function () {
+		it('builds validator chain from array with no arguments', function () {
+			$validators = [
+				"stringVal" => [],
+				"noWhitespace" => []
+			];
+			$validator = Input::buildValidatorFromArray($validators);
+			
+			expect($validator->validate('test'))->toBe(true);
+			expect($validator->validate('test with spaces'))->toBe(false);
+			expect($validator->validate(123))->toBe(true);
+		});
+
+		it('builds validator chain with arguments', function () {
+			$validators = [
+				"stringVal" => [],
+				"length" => [4, 20],
+				"noWhitespace" => []
+			];
+			$validator = Input::buildValidatorFromArray($validators);
+			
+			expect($validator->validate('test'))->toBe(true);
+			expect($validator->validate('validstring'))->toBe(true);
+			expect($validator->validate('abc'))->toBe(false); // too short
+			expect($validator->validate('toolongstringthatisgreaterthantwentycharacters'))->toBe(false); // too long
+			expect($validator->validate('test with spaces'))->toBe(false); // has whitespace
+		});
+
+		it('builds validator with mixed argument types', function () {
+			$validators = [
+				"stringVal" => [],
+				"length" => [1, 10]
+			];
+			$validator = Input::buildValidatorFromArray($validators);
+			
+			expect($validator->validate('a'))->toBe(true);
+			expect($validator->validate('short'))->toBe(true);
+			expect($validator->validate(''))->toBe(false); // too short
+			expect($validator->validate('toolongstring'))->toBe(false); // too long
+		});
+
+		it('builds single validator with no arguments', function () {
+			$validators = [
+				"email" => []
+			];
+			$validator = Input::buildValidatorFromArray($validators);
+			
+			expect($validator->validate('test@example.com'))->toBe(true);
+			expect($validator->validate('invalid-email'))->toBe(false);
+		});
+
+		it('builds single validator with arguments', function () {
+			$validators = [
+				"length" => [5, 15]
+			];
+			$validator = Input::buildValidatorFromArray($validators);
+			
+			expect($validator->validate('hello'))->toBe(true);
+			expect($validator->validate('test'))->toBe(false); // too short
+			expect($validator->validate('verylongstringthatexceedslimit'))->toBe(false); // too long
+		});
+
+		it('throws exception for invalid structure with non-string keys', function () {
+			$validators = [
+				123 => []
+			];
+			
+			expect(fn() => Input::buildValidatorFromArray($validators))
+				->toThrow(\InvalidArgumentException::class);
+		});
+
+		it('throws exception for invalid structure with non-array values', function () {
+			$validators = [
+				"stringVal" => "not an array"
+			];
+			
+			expect(fn() => Input::buildValidatorFromArray($validators))
+				->toThrow(\InvalidArgumentException::class);
+		});
+
+		it('handles empty validator array', function () {
+			$validators = [];
+			$validator = Input::buildValidatorFromArray($validators);
+			
+			// Should return alwaysValid validator
+			expect($validator->validate('anything'))->toBe(true);
+			expect($validator->validate(123))->toBe(true);
+			expect($validator->validate([]))->toBe(true);
+		});
+
+		it('handles associative array arguments', function () {
+			$validators = [
+				"stringVal" => [],
+				"length" => ["min" => 3, "max" => 10]
+			];
+			$validator = Input::buildValidatorFromArray($validators);
+			
+			expect($validator->validate('test'))->toBe(true);
+			expect($validator->validate('ab'))->toBe(false); // too short
+			expect($validator->validate('toolongstring'))->toBe(false); // too long
+		});
+	});
 });

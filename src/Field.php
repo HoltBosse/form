@@ -63,11 +63,12 @@ class Field {
 	}
 
 	public function isMissing() {
+		$filter = is_object($this->filter) ? Input::buildValidatorFromArray((array) $this->filter) : $this->filter;
 		if ($this->in_repeatable_form ?? null) {
 			// value will be in array
-			$value = Input::filter(Input::getVar($this->name)[$this->index], $this->filter);
+			$value = Input::filter(Input::getVar($this->name)[$this->index], $filter);
 		} else {
-			$value = Input::getVar($this->name, $this->filter);
+			$value = Input::getVar($this->name, $filter);
 		}
 
 		if ($value===false && $this->required) {
@@ -84,7 +85,8 @@ class Field {
 	}
 
 	public function setFromSubmit() {
-		$value = Input::getVar($this->name, $this->filter);
+		$filter = is_object($this->filter) ? Input::buildValidatorFromArray((array) $this->filter) : $this->filter;
+		$value = Input::getVar($this->name, $filter);
 		if (is_array($value)) {
 			$this->default = json_encode($value);
 		} else {
