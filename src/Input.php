@@ -2,6 +2,7 @@
 namespace HoltBosse\Form;
 
 use Respect\Validation\Validator;
+use Respect\Validation\ChainedValidator;
 
 class Input {
 	public static function stringURLSafe($string) {
@@ -70,7 +71,7 @@ class Input {
 		}
 	}
 
-	public static function getVar(mixed $input, null|string|Validator $filter='RAW', mixed $default=NULL) {
+	public static function getVar(mixed $input, null|string|Validator|ChainedValidator $filter='RAW', mixed $default=NULL) {
 		if (isset($_GET[$input])) {
 			return Input::filter($_GET[$input], $filter, $default);
 		} elseif (isset($_POST[$input])) {
@@ -80,7 +81,7 @@ class Input {
 		}
 	}
 
-	public static function filter(mixed $input, null|string|Validator $filter='RAW', mixed $default=NULL) {
+	public static function filter(mixed $input, null|string|Validator|ChainedValidator $filter='RAW', mixed $default=NULL) {
 		$foo=$input;
 
 		//use validator instance if it exists
