@@ -53,7 +53,8 @@ class Input extends Field {
 				//explictly using htmlspecialchars here instead of coreInput::stringHtmlSafe because this is for attribute handling while the latter method is for in elements
 				//for older php versions that convert only double quotes, we want to match modern php
 				$value = htmlspecialchars($this->default, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401);
-				echo "<input type='{$this->input_type}' value='{$value}' placeholder='{$placeholder}' {$minmax} {$pattern} {$step} {$this->getRenderedName()} {$this->getRenderedForm()} maxlength={$this->maxlength} minlength={$this->minlength} class='filter_{$this->filter} input' {$required} type='text' id='{$this->id}' >";
+				$filterClass = is_string($this->filter) ? "filter_{$this->filter}" : "";
+				echo "<input type='{$this->input_type}' value='{$value}' placeholder='{$placeholder}' {$minmax} {$pattern} {$step} {$this->getRenderedName()} {$this->getRenderedForm()} maxlength={$this->maxlength} minlength={$this->minlength} class='$filterClass input' {$required} type='text' id='{$this->id}' >";
 				echo $this->icon_status ? $this->icon_markup : false;
 			echo "</div>";
 			if ($this->description) {

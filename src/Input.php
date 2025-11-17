@@ -71,6 +71,32 @@ class Input {
 		}
 	}
 
+	public static function buildValidatorFromArray(array $validators): Validator|ChainedValidator {
+		$structureRule = Validator::arrayType()->each(Validator::arrayType())->call('array_keys', Validator::each(Validator::stringType()));
+
+		if (!$structureRule->validate($validators)) {
+			throw new \InvalidArgumentException(
+				'Each validator name must be a string key with an array value (arguments).'
+			);
+		}
+
+		$validator = Validator::alwaysValid();
+
+		foreach ($validators as $validatorName => $args) {
+			if (empty($args)) {
+				$validator = $validator->{$validatorName}();
+			} else {
+				if (array_values($args) === $args) {
+					$validator = $validator->{$validatorName}(...$args);
+				} else {
+					$validator = $validator->{$validatorName}(...array_values($args));
+				}
+			}
+		}
+
+		return $validator;
+	}
+
 	public static function getVar(mixed $input, null|string|Validator|ChainedValidator $filter='RAW', mixed $default=NULL) {
 		if (isset($_GET[$input])) {
 			return Input::filter($_GET[$input], $filter, $default);
