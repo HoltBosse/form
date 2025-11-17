@@ -1,6 +1,8 @@
 <?php
 namespace HoltBosse\Form;
 
+use Respect\Validation\Validator;
+
 class Input {
 	public static function stringURLSafe($string) {
 		//lowercase the string
@@ -68,22 +70,29 @@ class Input {
 		}
 	}
 
-	public static function getVar($input, $filter='RAW', $default=NULL) {
+	public static function getVar(mixed $input, null|string|Validator $filter='RAW', mixed $default=NULL) {
 		if (isset($_GET[$input])) {
-			return Input::filter($_GET[$input], $filter);
+			return Input::filter($_GET[$input], $filter, $default);
 		} elseif (isset($_POST[$input])) {
-			return Input::filter($_POST[$input], $filter);
+			return Input::filter($_POST[$input], $filter, $default);
 		} else {
-			if ($default!==NULL) {
-				return $default;
-			} else {
-				return NULL;
-			}
+			return $default;
 		}
 	}
 
-	public static function filter($input, $filter='RAW') {
+	public static function filter(mixed $input, null|string|Validator $filter='RAW', mixed $default=NULL) {
 		$foo=$input;
+
+		//use validator instance if it exists
+		if(!is_string($filter) && is_object($filter)) {
+			if($filter->isValid($foo)) {
+				return $input;
+			} else {
+				return $default;
+			}
+		}
+
+		//old terrible, trashy, broken junk for backwards compat
 		if ($filter=="RAW") {
 			return $foo;
 		} elseif ($filter=="ALIAS") {
