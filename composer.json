@@ -16,5 +16,8 @@
 		"allow-plugins": {
 			"pestphp/pest-plugin": true
 		}
+	},
+	"require": {
+		"respect/validation": "^2.4"
 	}
 }
