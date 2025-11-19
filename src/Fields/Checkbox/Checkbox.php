@@ -24,11 +24,19 @@ class Checkbox extends Field {
 	}
 
 	public function getFriendlyValue($helpful_info) {
-		$checked="";
-		if ($this->default==1) {
-			$checked=" checked ";
+		if($helpful_info && $helpful_info->return_in_text_form==true) {
+			if ($this->default==1) {
+				return "Checked";
+			} else {
+				return "Unchecked";
+			}
+		} else {
+			$checked="";
+			if ($this->default==1) {
+				$checked=" checked ";
+			}
+			return "<input type='checkbox' disabled {$checked}>";
 		}
-		return "<input type='checkbox' disabled {$checked}>";
 	}
 
 	public function loadFromConfig($config) {
