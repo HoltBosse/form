@@ -5,6 +5,7 @@ Use stdClass;
 Use Exception;
 Use JsonSerializable;
 Use HoltBosse\Form\Input;
+Use Respect\Validation\Validator as v;
 
 class Form implements JsonSerializable {
 	public $id;
@@ -148,7 +149,7 @@ class Form implements JsonSerializable {
 
 	public function isSubmitted() {
 		if ($this->id) {
-			$formName = Input::getVar("form_" . $this->id, "TEXT");
+			$formName = Input::getVar("form_" . $this->id, v::StringVal());
 			if ($formName) {
 				return true;
 			}

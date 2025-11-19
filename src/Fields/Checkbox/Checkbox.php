@@ -2,6 +2,7 @@
 namespace HoltBosse\Form\Fields\Checkbox;
 
 Use HoltBosse\Form\Field;
+use Respect\Validation\Validator as v;
 
 class Checkbox extends Field {
 
@@ -33,7 +34,7 @@ class Checkbox extends Field {
 	public function loadFromConfig($config) {
 		parent::loadFromConfig($config);
 		
-		$this->filter = $config->filter ?? 'NUMBER';
+		$this->filter = $config->filter ?? v::IntVal();
 	}
 
 	public function validate() {

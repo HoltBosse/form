@@ -3,6 +3,7 @@ namespace HoltBosse\Form;
 
 use Respect\Validation\Validator;
 use Respect\Validation\ChainedValidator;
+Use \Exception;
 
 class Input {
 	public static function stringURLSafe($string) {
@@ -71,10 +72,25 @@ class Input {
 		}
 	}
 
-	public static function buildValidatorFromArray(array $validators): Validator|ChainedValidator {
-		$structureRule = Validator::arrayType()->each(Validator::arrayType())->call('array_keys', Validator::each(Validator::stringType()));
+	public static function isValidatorRule(mixed $rule): Bool {
+		if(!is_array($rule) && !is_object($rule)) {
+			return false;
+		}
 
-		if (!$structureRule->validate($validators)) {
+		if (is_object($rule)) {
+			$rule = (array) $rule;
+		}
+		
+		$checker = Validator::arrayType()->each(Validator::arrayType())->call('array_keys', Validator::each(Validator::stringType()));
+		return $checker->validate($rule);
+	}
+
+	public static function buildValidatorFromArray(array|object $validators): Validator|ChainedValidator {
+		if (is_object($validators)) {
+			$validators = (array) $validators;
+		}
+
+		if (!self::isValidatorRule($validators)) {
 			throw new \InvalidArgumentException(
 				'Each validator name must be a string key with an array value (arguments).'
 			);
@@ -97,7 +113,11 @@ class Input {
 		return $validator;
 	}
 
-	public static function getVar(mixed $input, null|string|Validator|ChainedValidator $filter='RAW', mixed $default=NULL) {
+	public static function getVar(mixed $input, null|string|Validator|ChainedValidator $filter=NULL, mixed $default=NULL) {
+		if($filter===null) {
+			$filter=Validator::AlwaysValid();
+		}
+		
 		if (isset($_GET[$input])) {
 			return Input::filter($_GET[$input], $filter, $default);
 		} elseif (isset($_POST[$input])) {
@@ -107,10 +127,15 @@ class Input {
 		}
 	}
 
-	public static function filter(mixed $input, null|string|Validator|ChainedValidator $filter='RAW', mixed $default=NULL) {
+	public static function filter(mixed $input, null|string|Validator|ChainedValidator $filter=NULL, mixed $default=NULL) {
+		if($filter===null) {
+			$filter=Validator::AlwaysValid();
+		}
+		
 		$foo=$input;
 
 		//use validator instance if it exists
+		//@phpstan-ignore-next-line
 		if(!is_string($filter) && is_object($filter)) {
 			if($filter->isValid($foo)) {
 				return $input;

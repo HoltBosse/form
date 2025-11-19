@@ -3,6 +3,7 @@ namespace HoltBosse\Form\Fields\Select;
 
 Use HoltBosse\Form\Field;
 Use HoltBosse\Form\Input;
+use Respect\Validation\Validator as v;
 
 class Select extends Field {
 
@@ -130,10 +131,10 @@ class Select extends Field {
 		$this->slimselect_ajax_minchar = $config->slimselect_ajax_minchar ?? 3;
 		$this->slimselect_settings = $config->slimselect_settings ?? null;
 		if ($this->multiple) {
-			$this->filter = $config->filter ?? 'ARRAYOFSTRING';
+			$this->filter = $config->filter ?? V::arrayType()->each(v::stringVal());
 		}
 		else {
-			$this->filter = $config->filter ?? 'STRING';
+			$this->filter = $config->filter ?? v::StringVal();
 		}
 	}
 

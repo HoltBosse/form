@@ -2,6 +2,7 @@
 namespace HoltBosse\Form\Fields\Honeypot;
 
 Use HoltBosse\Form\Field;
+use Respect\Validation\Validator as v;
 
 class Honeypot extends Field {
 
@@ -32,7 +33,7 @@ class Honeypot extends Field {
 	public function loadFromConfig($config) {
 		parent::loadFromConfig($config);
 		
-		$this->filter = $config->filter ?? 'STRING';
+		$this->filter = $config->filter ?? v::StringVal();
 		$this->default = $config->default ?? $this->default;
 		$this->autocomplete = $config->autocomplete ?? "nothingtoseehere";
 		$this->save = $config->save ?? false;
