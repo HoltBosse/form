@@ -5,6 +5,7 @@ Use HoltBosse\Form\Field;
 Use HoltBosse\Form\Input;
 Use HoltBosse\Form\FormBuilderAttribute;
 Use HoltBosse\Form\FormBuilderDataType;
+use Respect\Validation\Validator as v;
 
 /* Note: this field does NOT currently support checking fields/names within a repeatable form section */
 class Antispam extends Field {
@@ -50,7 +51,7 @@ class Antispam extends Field {
 	public function loadFromConfig($config) {
 		parent::loadFromConfig($config);
 
-		$this->filter = $config->filter ?? 'STRING';
+		$this->filter = $config->filter ?? v::StringVal();
 		$this->fieldname = $config->fieldname ?? null;
 		$this->use_blacklist = $config->use_blacklist ?? false;
 		$this->block_urls =  $config->block_urls ?? false;

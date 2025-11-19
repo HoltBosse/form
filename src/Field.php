@@ -2,6 +2,7 @@
 namespace HoltBosse\Form;
 
 Use HoltBosse\Form\Input;
+use Respect\Validation\Validator as v;
 
 // BASE CLASS FOR FIELDS
 class Field {
@@ -63,7 +64,7 @@ class Field {
 	}
 
 	public function isMissing() {
-		$filter = is_object($this->filter) ? Input::buildValidatorFromArray((array) $this->filter) : $this->filter;
+		$filter = Input::isValidatorRule($this->filter) ? Input::buildValidatorFromArray((array) $this->filter) : $this->filter;
 		if ($this->in_repeatable_form ?? null) {
 			// value will be in array
 			$value = Input::filter(Input::getVar($this->name)[$this->index], $filter);
@@ -85,7 +86,7 @@ class Field {
 	}
 
 	public function setFromSubmit() {
-		$filter = is_object($this->filter) ? Input::buildValidatorFromArray((array) $this->filter) : $this->filter;
+		$filter = Input::isValidatorRule($this->filter) ? Input::buildValidatorFromArray((array) $this->filter) : $this->filter;
 		$value = Input::getVar($this->name, $filter);
 		if (is_array($value)) {
 			$this->default = json_encode($value);
@@ -96,7 +97,7 @@ class Field {
 
 	public function setFromSubmitRepeatable($index=0) {
 		// index = index of repeated form inside repeatable
-		$raw_value_array = Input::getVar($this->name, "ARRAYRAW"); // get raw array
+		$raw_value_array = Input::getVar($this->name, v::ArrayType()); // get raw array
 		$value = $raw_value_array[$index]; // get nth entry in raw array
 		$this->index = $index; // set repeatable field index for validation
 
@@ -123,7 +124,7 @@ class Field {
 		$this->label = $config->label ?? '';
 		$this->required = $config->required ?? false;
 		$this->description = $config->description ?? '';
-		$this->filter = $config->filter ?? 'RAW';
+		$this->filter = $config->filter ?? v::AlwaysValid();
 		$this->default = $config->default ?? $this->default;
 		$this->maxlength = $config->maxlength ?? 99999;
 		$this->minlength = $config->minlength ?? 0;

@@ -3,6 +3,7 @@ namespace HoltBosse\Form\Fields\Textarea;
 
 Use HoltBosse\Form\Field;
 Use HoltBosse\Form\Input;
+use Respect\Validation\Validator as v;
 
 class Textarea extends Field {
 
@@ -37,7 +38,7 @@ class Textarea extends Field {
 		echo "</div>";
 	}
 
-	public function get_friendly_value($helpful_info) {
+	public function getFriendlyValue($helpful_info) {
 		if($this->filter=="RAW" && $helpful_info && $helpful_info->return_in_text_form!=true) {
 			return Input::stringHtmlSafe($this->default);
 		} else {
@@ -45,10 +46,15 @@ class Textarea extends Field {
 		}
 	}
 
+	public function setFromSubmit() {
+		parent::setFromSubmit();
+		$this->default = str_replace("\n","[NEWLINE]",$this->default);
+	}
+
 	public function loadFromConfig($config) {
 		parent::loadFromConfig($config);
 		
-		$this->filter = $config->filter ?? 'TEXTAREA';
+		$this->filter = $config->filter ?? V::StringVal();
 		$this->input_type = $config->input_type ?? 'text';
 	}
 
