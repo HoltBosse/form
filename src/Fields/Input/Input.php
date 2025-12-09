@@ -64,10 +64,13 @@ class Input extends Field {
 	}
 
 	public function getFriendlyValue($helpful_info) {
-		if($this->filter=="RAW" && $helpful_info && $helpful_info->return_in_text_form!=true) {
-			return coreInput::stringHtmlSafe($this->default);
+		$output = $this->default;
+		$output = htmlspecialchars_decode($output); //due to some old junky filters, stuff was stored encoded, so decode it first
+
+		if($helpful_info && $helpful_info->return_in_text_html_form==true) {
+			return coreInput::stringHtmlSafe($output);
 		} else {
-			return $this->default;
+			return $output;
 		}
 	}
 
