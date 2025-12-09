@@ -112,7 +112,13 @@ class Field {
 		// ostensibly used by 'list' item option in content listings for user driven columns
 		// helpful info can be anything, but something like the field config object
 		// can be used to determine, for example, a content type for a contentselector etc
-		return $this->default;
+		$output = $this->default;
+		$output = htmlspecialchars_decode($output); //due to some old junky filters, stuff was stored encoded, so decode it first
+		if($helpfulInfo && $helpfulInfo->return_in_text_html_form==true) {
+			return Input::stringHtmlSafe($output);
+		} else {
+			return $output;
+		}
 	}
 
 	public function loadFromConfig($config) {

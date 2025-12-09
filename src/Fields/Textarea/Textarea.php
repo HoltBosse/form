@@ -39,10 +39,15 @@ class Textarea extends Field {
 	}
 
 	public function getFriendlyValue($helpful_info) {
-		if($this->filter=="RAW" && $helpful_info && $helpful_info->return_in_text_form!=true) {
-			return Input::stringHtmlSafe($this->default);
+		$output = $this->default;
+		$output = htmlspecialchars_decode($output); //due to some old junky filters, stuff was stored encoded, so decode it first
+
+		if($helpful_info && $helpful_info->return_in_text_html_form==true) {
+			$output = Input::stringHtmlSafe($output);
+			return str_replace("[NEWLINE]","<br>",$output);
 		} else {
-			return $this->default;
+			$output = str_replace("[NEWLINE]","\n",$output);
+			return $output;
 		}
 	}
 
