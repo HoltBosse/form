@@ -1,7 +1,7 @@
 <?php
 namespace HoltBosse\Form\Fields\Textarea;
 
-Use HoltBosse\Form\Field;
+Use HoltBosse\Form\{Field, FormBuilderAttribute, FormBuilderDataType};
 Use HoltBosse\Form\Input;
 use Respect\Validation\Validator as v;
 
@@ -11,6 +11,8 @@ class Textarea extends Field {
 	public $minlength;
 	public $select_options;
 	public $input_type;
+	#[FormBuilderAttribute(fieldType: "Input", dataType: FormBuilderDataType::String, required: false)]
+	public $placeholder; //yes this is re-declared from parent for form builder
 
 	public function display() {
 		$hidden = "";

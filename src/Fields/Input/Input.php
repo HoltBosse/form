@@ -1,7 +1,7 @@
 <?php
 namespace HoltBosse\Form\Fields\Input;
 
-Use HoltBosse\Form\Field;
+Use HoltBosse\Form\{Field, FormBuilderAttribute, FormBuilderDataType};
 Use HoltBosse\Form\Input as coreInput;
 
 class Input extends Field {
@@ -16,6 +16,8 @@ class Input extends Field {
 	public $icon_status;
 	public $icon_parent_class;
 	public $icon_markup;
+	#[FormBuilderAttribute(fieldType: "Input", dataType: FormBuilderDataType::String, required: false)]
+	public $placeholder; //yes this is re-declared from parent for form builder
 
 	public function display() {
 		$hidden = "";
