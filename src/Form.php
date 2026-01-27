@@ -264,7 +264,7 @@ class Form implements JsonSerializable {
 			echo "<h1 style='text-align: center;  font-size: 24px;'>$this->displayName submission</h1>";
 			foreach($this->fields as $field) {
 				if($field->name!="error!!!" && $field->save!==false) {
-					echo "<p>" . $field->label . ": " . $field->default . "<p>";
+					echo "<p>" . $field->label . ": " . $field->getFriendlyValue((object)["return_in_text_html_form"=>true, "return_in_email_html_form"=>true]) . "<p>";
 				}
 			}
 		return $this->createEmailHtmlWrapper(ob_get_clean(), $bannerImage);
