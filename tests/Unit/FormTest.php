@@ -141,6 +141,9 @@ test('Form createEmailHtml generates correct HTML', function () {
 		public function validate() { return true; }
 		public function setFromSubmit() {}
 		public function display() {}
+		public function getFriendlyValue($helpful_info) {
+			return $this->default;
+		}
 	};
 	\HoltBosse\Form\Form::registerField('FormTestCreateEmailHtmlFakeText', get_class($mockFieldClass));
 
