@@ -11,8 +11,9 @@ class FormBuilderAttribute {
 	public bool $required;
 	public ?string $label;
 	public ?string $description;
+	public array $config = [];
 
-	public function __construct(string $fieldType, FormBuilderDataType $dataType, bool $required, ?string $label = null, ?string $description = null) {
+	public function __construct(string $fieldType, FormBuilderDataType $dataType, bool $required, ?string $label = null, ?string $description = null, array $config = []) {
 		if (!is_subclass_of(Form::getFieldClass($fieldType), Field::class) && $fieldType !== Field::class) {
 			throw new InvalidArgumentException(
 				sprintf('fieldType must be Field or subclass, %s given', $fieldType)
@@ -24,5 +25,6 @@ class FormBuilderAttribute {
 		$this->required = $required;
 		$this->label = $label;
 		$this->description = $description;
+		$this->config = $config;
 	}
 }

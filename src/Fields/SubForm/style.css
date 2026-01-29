@@ -1,0 +1,24 @@
+.subform_container {
+    .subform {
+        border:2px solid #aaa;
+        margin:1em;
+        padding:1em;
+        view-transition-name: match-element;
+
+        &:first-of-type {
+            .sf_up {
+                display: none;
+            }
+        }
+
+        &:last-of-type {
+            .sf_down {
+                display: none;
+            }
+        }
+    }
+}
+
+::view-transition-group(*) {
+  animation-duration: 0.5s;
+}

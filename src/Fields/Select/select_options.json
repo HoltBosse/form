@@ -1,0 +1,20 @@
+{
+	"id":"select_options",
+	"fields":[
+        {
+			"name":"text",
+			"id":"text",
+			"type":"Text",
+			"label":"Display",
+			"required":true
+		},
+        {
+			"name":"value",
+			"id":"value",
+			"type":"Text",
+			"label":"Value",
+			"required":true,
+            "pattern":"[a-z]+"
+		}
+    ]
+}

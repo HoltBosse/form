@@ -1,12 +1,12 @@
 <?php
 namespace HoltBosse\Form\Fields\Select;
 
-Use HoltBosse\Form\Field;
+Use HoltBosse\Form\{Field, FormBuilderAttribute, FormBuilderDataType};
 Use HoltBosse\Form\Input;
 use Respect\Validation\Validator as v;
 
 class Select extends Field {
-
+	#[FormBuilderAttribute(fieldType: "SubForm", dataType: FormBuilderDataType::SelectOptions, required: true, config: ["form_base_path" => __DIR__, "form_path" => "/select_options.json"])]
 	public $select_options;
 	public $config;
 	public $slimselect;
