@@ -6,4 +6,5 @@ enum FormBuilderDataType: string {
 	case LetterString = 'LETTERSTRING';
 	case Integer = 'INTEGER';
 	case Bool = 'BOOL'; 
+	case SelectOptions = 'SELECTOPTIONS';
 }
