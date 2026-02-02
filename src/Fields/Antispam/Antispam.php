@@ -60,6 +60,8 @@ class Antispam extends Field {
 		$this->ends_with_ru_check = $config->ends_with_ru_check ?? false;
 		$this->bbcode_url_check = $config->bbcode_url_check ?? false;
 		$this->save = $config->save ?? false;
+
+		return $this;
 	}
 
 	private function inBlacklist ($value) {

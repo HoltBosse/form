@@ -43,6 +43,8 @@ class Checkbox extends Field {
 		parent::loadFromConfig($config);
 		
 		$this->filter = $config->filter ?? v::IntVal();
+
+		return $this;
 	}
 
 	public function validate() {

@@ -136,6 +136,8 @@ class Select extends Field {
 		else {
 			$this->filter = $config->filter ?? v::StringVal();
 		}
+
+		return $this;
 	}
 
 	public function validate() {

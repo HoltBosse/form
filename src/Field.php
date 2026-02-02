@@ -138,5 +138,7 @@ class Field {
 		$this->logic = $config->logic ?? '';
 		$this->nowrap = $config->nowrap ?? false;
 		$this->form = $config->form ?? null;
+
+		return $this;
 	}
 }

@@ -15,5 +15,7 @@ class Html extends Field {
 		
 		$this->html = $config->html ?? "";
 		$this->save = $config->save ?? false;
+
+		return $this;
 	}
 }

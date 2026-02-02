@@ -97,6 +97,8 @@ class Input extends Field {
 		$this->icon_status = $config->icon_status ?? false;
 		$this->icon_parent_class = $config->icon_parent_class ?? "";
 		$this->icon_markup = $config->icon_markup ?? "";
+
+		return $this;
 	}
 
 	public function validate() {
