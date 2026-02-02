@@ -30,7 +30,7 @@ class Textarea extends Field {
 			echo "<div class='control' data-value='{$dataValueSafe}'>";
 				$this->default = str_replace("[NEWLINE]","\n",$this->default);
 				$filterClass = is_string($this->filter) ? "filter_{$this->filter}" : "";
-				echo "<textarea oninput='this.parentNode.dataset.value = this.value;' type='{$this->input_type}' maxlength={$this->maxlength} placeholder='{$this->placeholder}' minlength={$this->minlength} class='$filterClass input autogrowingtextarea' {$required} type='text' id='{$this->id}' {$this->getRenderedName()} {$this->getRenderedForm()}>";
+				echo "<textarea style='field-sizing: content;' type='{$this->input_type}' maxlength={$this->maxlength} placeholder='{$this->placeholder}' minlength={$this->minlength} class='$filterClass input' {$required} type='text' id='{$this->id}' {$this->getRenderedName()} {$this->getRenderedForm()}>";
 				echo $this->default;
 				echo "</textarea>";
 			echo "</div>";
