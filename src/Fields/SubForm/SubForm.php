@@ -175,6 +175,8 @@ class SubForm extends Field {
 		parent::loadFromConfig($config);
 		
 		$this->form_path = $config->form_path ?? '';
+
+		return $this;
 	}
 
 	public function validate() {

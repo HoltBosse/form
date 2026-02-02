@@ -63,6 +63,8 @@ class Textarea extends Field {
 		
 		$this->filter = $config->filter ?? V::StringVal();
 		$this->input_type = $config->input_type ?? 'text';
+
+		return $this;
 	}
 
 	public function validate() {
