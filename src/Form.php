@@ -160,11 +160,20 @@ class Form implements JsonSerializable {
 	public function validate() {
 		foreach ($this->fields as $field) {
 			if (!$field->validate()) {
-				$field_info = print_r($field,true);
 				return false;
 			}
 		}
 		return true;
+	}
+
+	public function getFailedValidationFields(): array {
+		$errors = [];
+		foreach ($this->fields as $name => $field) {
+			if (!$field->validate()) {
+				$errors[$name] = $name;
+			}
+		}
+		return $errors;
 	}
 
 	public function jsonSerialize(): mixed {
