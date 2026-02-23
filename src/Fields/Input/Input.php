@@ -78,7 +78,7 @@ class Input extends Field {
 		}
 	}
 
-	public function loadFromConfig(mixed $config): self {
+	public function loadFromConfig(object $config): self {
 		parent::loadFromConfig($config);
 		
 		$this->input_type = $config->input_type ?? 'text';

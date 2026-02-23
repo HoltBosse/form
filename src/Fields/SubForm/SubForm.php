@@ -176,7 +176,7 @@ class SubForm extends Field {
 	}
 
 
-	public function loadFromConfig(mixed $config): self {
+	public function loadFromConfig(object $config): self {
 		parent::loadFromConfig($config);
 		
 		$this->form_path = $config->form_path ?? '';

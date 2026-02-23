@@ -121,7 +121,7 @@ class Field {
 		}
 	}
 
-	public function loadFromConfig(mixed $config): self {
+	public function loadFromConfig(object $config): self {
 		// config is json field already converted to object by form class
 		$this->type = $config->type ?? 'error!!!';
 		$this->name = $config->name ?? 'error!!!';

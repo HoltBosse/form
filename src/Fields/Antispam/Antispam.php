@@ -39,7 +39,7 @@ class Antispam extends Field {
 		return $offsetString === '.ru';
 	}
 
-	public function loadFromConfig(mixed $config): self {
+	public function loadFromConfig(object $config): self {
 		parent::loadFromConfig($config);
 
 		$this->filter = $config->filter ?? v::StringVal();

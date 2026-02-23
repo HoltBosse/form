@@ -10,7 +10,7 @@ class Html extends Field {
 		echo $this->html;
 	}
 
-	public function loadFromConfig(mixed $config): self {
+	public function loadFromConfig(object $config): self {
 		parent::loadFromConfig($config);
 		
 		$this->html = $config->html ?? "";

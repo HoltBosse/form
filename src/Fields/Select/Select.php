@@ -120,7 +120,7 @@ class Select extends Field {
 		endif;
 	}
 
-	public function loadFromConfig(mixed $config): self {
+	public function loadFromConfig(object $config): self {
 		parent::loadFromConfig($config);
 		
 		$this->select_options = $config->select_options ?? [];

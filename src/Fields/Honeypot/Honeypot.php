@@ -27,7 +27,7 @@ class Honeypot extends Field {
 		<?php
 	}
 
-	public function loadFromConfig(mixed $config): self {
+	public function loadFromConfig(object $config): self {
 		parent::loadFromConfig($config);
 		
 		$this->filter = $config->filter ?? v::StringVal();

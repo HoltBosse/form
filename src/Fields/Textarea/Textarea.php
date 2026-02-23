@@ -54,7 +54,7 @@ class Textarea extends Field {
 		$this->default = str_replace("\n","[NEWLINE]",$this->default);
 	}
 
-	public function loadFromConfig(mixed $config): self {
+	public function loadFromConfig(object $config): self {
 		parent::loadFromConfig($config);
 		
 		$this->filter = $config->filter ?? V::StringVal();
