@@ -1,25 +1,57 @@
 <?php
 
 use HoltBosse\Form\Form;
+use HoltBosse\Form\Field;
 use PHPUnit\Framework\TestCase;
+
+// Mock Field classes for testing
+class MockTextField extends Field {
+	public function loadFromConfig(object $config): Field {
+		parent::loadFromConfig($config);
+		$this->name = $config->name;
+		$this->label = $config->label ?? 'Test Field';
+		$this->type = 'text';
+		return $this;
+	}
+	public function validate(): bool { return true; }
+	public function setFromSubmit(): void {}
+	public function display(): void {}
+}
+
+class MockTextField2 extends Field {
+	public function loadFromConfig(object $config): Field {
+		parent::loadFromConfig($config);
+		$this->name = $config->name;
+		$this->label = $config->label ?? 'Test Field';
+		$this->type = 'text';
+		return $this;
+	}
+	public function validate(): bool { return true; }
+	public function setFromSubmit(): void {}
+	public function display(): void {}
+}
+
+class MockTextField3 extends Field {
+	public function loadFromConfig(object $config): Field {
+		parent::loadFromConfig($config);
+		$this->name = $config->name;
+		$this->label = $config->label ?? 'Test Field';
+		$this->default = $config->default ?? 'test value';
+		$this->type = 'text';
+		return $this;
+	}
+	public function validate(): bool { return true; }
+	public function setFromSubmit(): void {}
+	public function display(): void {}
+	public function getFriendlyValue(mixed $helpfulInfo): mixed {
+		return $this->default;
+	}
+}
 
 // Mock Field class for registration
 test('Form loads fields from JSON and serializes correctly', function () {
 	// Register a mock field type
-	$mockFieldClass = new class extends \HoltBosse\Form\Field {
-		public $name;
-		public $type = 'text';
-		public $label = 'Test Field';
-		public $default = 'default value';
-		public $save = true;
-		public function loadFromConfig($config) {
-			$this->name = $config->name;
-		}
-		public function validate() { return true; }
-		public function setFromSubmit() {}
-		public function display() {}
-	};
-	\HoltBosse\Form\Form::registerField('FormTestJsonTestFakeText', get_class($mockFieldClass));
+	\HoltBosse\Form\Form::registerField('FormTestJsonTestFakeText', MockTextField::class);
 
 	// Create a sample form JSON
 	$formJson = [
@@ -43,7 +75,7 @@ test('Form loads fields from JSON and serializes correctly', function () {
 	expect($form->id)->toBe('test_form');
 	expect($form->displayName)->toBe('Test Form');
 	expect($form->fields['field1']->name)->toBe('field1');
-	expect($form->fields['field1']->label)->toBe('Test Field');
+	expect($form->fields['field1']->label)->toBe('Field 1');
 
 	// Test serialization
 	$json = $form->serializeJson();
@@ -76,20 +108,7 @@ test('Form loads fields from JSON and serializes correctly', function () {
 
 test('Form getFieldByName returns the correct field', function () {
 	// Register a mock field type
-	$mockFieldClass = new class extends \HoltBosse\Form\Field {
-		public $name;
-		public $type = 'text';
-		public $label = 'Test Field';
-		public $default = 'default value';
-		public $save = true;
-		public function loadFromConfig($config) {
-			$this->name = $config->name;
-		}
-		public function validate() { return true; }
-		public function setFromSubmit() {}
-		public function display() {}
-	};
-	\HoltBosse\Form\Form::registerField('FormTestGetFieldByNameFakeText', get_class($mockFieldClass));
+	\HoltBosse\Form\Form::registerField('FormTestGetFieldByNameFakeText', MockTextField2::class);
 
 	// Create a sample form JSON
 	$formJson = [
@@ -113,7 +132,7 @@ test('Form getFieldByName returns the correct field', function () {
 	$field = $form->getFieldByName('field2');
 	expect($field)->not()->toBeNull();
 	expect($field->name)->toBe('field2');
-	expect($field->label)->toBe('Test Field');
+	expect($field->label)->toBe('Field 2');
 
 	// Test getFieldByName throws for missing field
 	expect(fn() => $form->getFieldByName('does_not_exist'))->toThrow(Exception::class);
@@ -127,25 +146,7 @@ test('Form createEmailHtml generates correct HTML', function () {
 	$_SERVER['SERVER_NAME'] = 'example.com';
 
 	// Register a mock field type
-	$mockFieldClass = new class {
-		public $name;
-		public $type = 'text';
-		public $label = 'Test Field';
-		public $default = 'test value';
-		public $save = true;
-		public function loadFromConfig($config) {
-			$this->name = $config->name;
-			$this->label = $config->label;
-			$this->default = $config->default ?? 'test value';
-		}
-		public function validate() { return true; }
-		public function setFromSubmit() {}
-		public function display() {}
-		public function getFriendlyValue($helpful_info) {
-			return $this->default;
-		}
-	};
-	\HoltBosse\Form\Form::registerField('FormTestCreateEmailHtmlFakeText', get_class($mockFieldClass));
+	\HoltBosse\Form\Form::registerField('FormTestCreateEmailHtmlFakeText', MockTextField3::class);
 
 	// Create a sample form JSON
 	$formJson = [
