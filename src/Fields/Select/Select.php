@@ -7,19 +7,20 @@ use Respect\Validation\Validator as v;
 
 class Select extends Field {
 	#[FormBuilderAttribute(fieldType: "SubForm", dataType: FormBuilderDataType::SelectOptions, required: true, config: ["form_base_path" => __DIR__, "form_path" => "/select_options.json"])]
-	public $select_options;
-	public $config;
-	public $slimselect;
-	public $multiple;
-	public $placeholder;
-	public $slimselect_ajax;
-	public $slimselect_ajax_minchar;
-	public $slimselect_ajax_maxchar;
-	public $slimselect_ajax_url;
-	public $slimselect_settings;
-	public $empty_string;
+	// @phpstan-ignore missingType.iterableValue
+	public array $select_options = [];
+	public mixed $config = null;
+	public bool $slimselect = false;
+	public bool $multiple = false;
+	public ?string $placeholder = null;
+	public mixed $slimselect_ajax = null;
+	public mixed $slimselect_ajax_minchar = null;
+	public mixed $slimselect_ajax_maxchar = null;
+	public mixed $slimselect_ajax_url = null;
+	public mixed $slimselect_settings = null;
+	public mixed $empty_string = null;
 
-	public function display() {
+	public function display(): void {
 		$required="";
 		if ($this->required) {$required=" required ";}
 		$hidden = "";
@@ -119,7 +120,7 @@ class Select extends Field {
 		endif;
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(mixed $config): self {
 		parent::loadFromConfig($config);
 		
 		$this->select_options = $config->select_options ?? [];
@@ -140,7 +141,7 @@ class Select extends Field {
 		return $this;
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		if ($this->isMissing()) {
 			return false;
 		}

@@ -5,21 +5,19 @@ Use HoltBosse\Form\{Field, FormBuilderAttribute, FormBuilderDataType};
 Use HoltBosse\Form\Input as coreInput;
 
 class Input extends Field {
-
-	public $select_options;
-	public $pattern;
-	public $input_type;
-	public $min;
-	public $max;
-	public $attribute_list;
-	public $step;
-	public $icon_status;
-	public $icon_parent_class;
-	public $icon_markup;
+	public ?string $pattern = null;
+	public ?string $input_type = null;
+	public ?string $min = null;
+	public ?string $max = null;
+	public ?string $attribute_list = null;
+	public ?string $step = null;
+	public ?bool $icon_status = null;
+	public ?string $icon_parent_class = null;
+	public ?string $icon_markup = null;
 	#[FormBuilderAttribute(fieldType: "Input", dataType: FormBuilderDataType::String, required: false)]
-	public $placeholder; //yes this is re-declared from parent for form builder
+	public ?string $placeholder = null; //yes this is re-declared from parent for form builder
 
-	public function display() {
+	public function display(): void {
 		$hidden = "";
 		$required="";
 		$pattern="";
@@ -69,7 +67,7 @@ class Input extends Field {
 		echo "</div>";
 	}
 
-	public function getFriendlyValue($helpful_info) {
+	public function getFriendlyValue(mixed $helpful_info): mixed {
 		$output = $this->default;
 		$output = htmlspecialchars_decode($output); //due to some old junky filters, stuff was stored encoded, so decode it first
 
@@ -80,7 +78,7 @@ class Input extends Field {
 		}
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(mixed $config): self {
 		parent::loadFromConfig($config);
 		
 		$this->input_type = $config->input_type ?? 'text';
@@ -101,7 +99,7 @@ class Input extends Field {
 		return $this;
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		// TODO: enhance validation
 		if ($this->isMissing() || mb_strlen($this->default)>$this->maxlength) {
 			return false;

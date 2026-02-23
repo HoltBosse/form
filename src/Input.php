@@ -6,7 +6,12 @@ use Respect\Validation\ChainedValidator;
 Use \Exception;
 
 class Input {
-	public static function stringURLSafe($string) {
+	public static function stringURLSafe(string|null $string): string {
+		if ($string === null) {
+			trigger_error('Passing null to parameter #1 ($string) of type string is deprecated in', E_USER_DEPRECATED);
+			return '';
+		}
+
 		//lowercase the string
 		$str = strtolower($string);
 
@@ -21,17 +26,23 @@ class Input {
 		$str = preg_replace(['/\s+/','/[^A-Za-z0-9\-]/'], ['-',''], $str);
 
 		// lowercase and trim
+		// @phpstan-ignore argument.type
 		$str = trim(strtolower($str));
 		return $str;
 	}
 
 	//this method exists so that if any future improvements are to be made, it is easy to do in one place
-	public static function stringHtmlSafe($string) {
+	public static function stringHtmlSafe(string|null $string): string {
+		if ($string === null) {
+			trigger_error('Passing null to parameter #1 ($string) of type string is deprecated in', E_USER_DEPRECATED);
+			return '';
+		}
+
 		//for older php versions that convert only double quotes, we want to match modern php
 		return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401);
 	}
 
-	public static function sprintfHtmlSafe($format, ...$args) {
+	public static function sprintfHtmlSafe(string $format, mixed ...$args): string {
 		$safeArgs = array_map(function($arg) {
 			if (is_string($arg)) {
 				return self::stringHtmlSafe($arg);
@@ -45,20 +56,25 @@ class Input {
 		return sprintf($format, ...$safeArgs);
 	}
 
-	public static function printfHtmlSafe($format, ...$args) {
+	public static function printfHtmlSafe(string $format, mixed ...$args): int {
 		$output = self::sprintfHtmlSafe($format, ...$args);
 		echo $output;
 		return strlen($output);
 	}
 
-	public static function makeAlias($string) {
+	public static function makeAlias(string|null $string): string {
+		if ($string === null) {
+			trigger_error('Passing null to parameter #1 ($string) of type string is deprecated in', E_USER_DEPRECATED);
+			return '';
+		}
 		$string = strip_tags($string);
 		$string = preg_replace('/[\x00-\x1F\x7F]/u', '', $string); // Remove low ASCII chars
 		$string = Input::stringURLSafe($string);
 		return $string;
 	}
 
-	public static function tuplesToAssoc($arr) {
+	// @phpstan-ignore missingType.iterableValue
+	public static function tuplesToAssoc(mixed $arr): array {
 		if (is_array($arr)) {
 			$result = [];
 			foreach ($arr as $i) {
@@ -68,6 +84,7 @@ class Input {
 			}
 			return $result;
 		} else {
+			trigger_error('Input::tuplesToAssoc expects an array of tuples with "key" and "value" properties. Received ' . gettype($arr), E_USER_DEPRECATED);
 			return [];
 		}
 	}
@@ -85,6 +102,7 @@ class Input {
 		return $checker->validate($rule);
 	}
 
+	// @phpstan-ignore missingType.iterableValue
 	public static function buildValidatorFromArray(array|object $validators): Validator|ChainedValidator {
 		if (is_object($validators)) {
 			$validators = (array) $validators;
@@ -113,7 +131,7 @@ class Input {
 		return $validator;
 	}
 
-	public static function getVar(mixed $input, null|string|Validator|ChainedValidator $filter=NULL, mixed $default=NULL) {
+	public static function getVar(mixed $input, null|string|Validator|ChainedValidator $filter=NULL, mixed $default=NULL): mixed {
 		if($filter===null) {
 			$filter=Validator::AlwaysValid();
 		}
@@ -127,7 +145,7 @@ class Input {
 		}
 	}
 
-	public static function filter(mixed $input, null|string|Validator|ChainedValidator $filter=NULL, mixed $default=NULL) {
+	public static function filter(mixed $input, null|string|Validator|ChainedValidator $filter=NULL, mixed $default=NULL): mixed {
 		if($filter===null) {
 			$filter=Validator::AlwaysValid();
 		}
@@ -137,6 +155,7 @@ class Input {
 		//use validator instance if it exists
 		//@phpstan-ignore-next-line
 		if(!is_string($filter) && is_object($filter)) {
+			// @phpstan-ignore method.notFound
 			if($filter->isValid($foo)) {
 				return $input;
 			} else {
@@ -144,11 +163,15 @@ class Input {
 			}
 		}
 
+		trigger_error('please use new Respect/Validation based validators instead of the old filter system', E_USER_DEPRECATED);
+
 		//old terrible, trashy, broken junk for backwards compat
 		if ($filter=="RAW") {
 			return $foo;
 		} elseif ($filter=="ALIAS") {
 			$temp = filter_var($foo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+			// since this is legacy handling, we dont care
+			// @phpstan-ignore argument.type
 			return Input::stringURLSafe($temp);
 		} elseif ($filter=="TEXTAREA") {
 			// replace newlines with placeholder

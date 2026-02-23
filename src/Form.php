@@ -8,28 +8,34 @@ Use HoltBosse\Form\Input;
 Use Respect\Validation\Validator as v;
 
 class Form implements JsonSerializable {
-	public $id;
-	public $displayName;
-	public $fields;
-	public $json;
-	public $repeatable;
-	public $formPath;
+	public mixed $id;
+	public mixed $displayName;
+	public mixed $fields;
+	public mixed $json;
+	public mixed $repeatable;
+	public mixed $formPath;
 
-	private static $fieldRegistry = [];
+	// @phpstan-ignore missingType.iterableValue
+	private static array $fieldRegistry = [];
 
-	function __construct($path, $repeatable=false) {
+	function __construct(mixed $path, mixed $repeatable=false) {
 		$this->fields = [];
 		$this->repeatable = $repeatable;
 		$this->formPath = $path;
 		$this->loadJson($path);
 	}
 
-	private function loadJson($path) {
+	private function loadJson(mixed$path): void {
 		if (gettype($path)=="object") {
 			$obj = $path;
 		} elseif (is_file($path)) {
 			$this->json = file_get_contents($path);
-			$obj = json_decode($this->json);
+
+			if ($this->json === false) {
+				throw new Exception("Failed to read JSON file: " . $path);
+			}
+
+			$obj = json_decode($this->json, false, 512, JSON_THROW_ON_ERROR);
 		} else {
 			throw new Exception("File '{$path}' not found or invalid data passed");
 		}
@@ -45,8 +51,10 @@ class Form implements JsonSerializable {
 				}
 
 				$thisfield = new self::$fieldRegistry[$field_config->type]();
+				// @phpstan-ignore method.notFound
 				$thisfield->loadFromConfig($field_config);
 				if ($this->repeatable) {
+					// @phpstan-ignore property.notFound
 					$thisfield->in_repeatable_form = true;
 				}
 				if (property_exists($field_config,'name')) {
@@ -64,14 +72,14 @@ class Form implements JsonSerializable {
 	/**
 		* register a classname by its type string
 	*/
-	public static function registerField($type, $class) {
+	public static function registerField(string $type, string $class): void {
 		self::$fieldRegistry[$type] = $class;
 	}
 
 	/**
 		* register an type aliased to another (existing!) type
 	*/
-	public static function registerFieldAlias($aliasType, $type) {
+	public static function registerFieldAlias(string $aliasType, string $type): void {
 		if(!self::$fieldRegistry[$type]) {
 			throw new Exception("Field type '{$type}' not registered when trying to register alias '{$aliasType}'");
 		}
@@ -79,11 +87,11 @@ class Form implements JsonSerializable {
 		self::$fieldRegistry[$aliasType] = self::$fieldRegistry[$type];
 	}
 
-	public static function getFieldClass($type) {
+	public static function getFieldClass(string $type): string {
 		return self::$fieldRegistry[$type];
 	}
 
-	public function setFieldRequiredBasedOnLogic($field) {
+	public function setFieldRequiredBasedOnLogic(Field $field): void {
 		// logic here mirrors that of js section in 'display' function in this class
 		// algorithm is essentially:
 		// loop over logic arrays
@@ -114,18 +122,18 @@ class Form implements JsonSerializable {
 					}
 					$or_arr[] = !in_array(false, $and_arr, true); // if false is in our AND array, set this OR to false;
 				}
-				$field->logic_checks_done = true;
+				//$field->logic_checks_done = true;
 				$field->required = in_array(true, $or_arr, true); // if true is anywhere in our or_arr, we're required
-				if (!$field->required) {
+				/* if (!$field->required) {
 					$field->required_ignore_by_logic = true;
-				}
+				} */
 			}
 			// else no logic available, carry on
 		}
 		// else - we weren't required in the first place!
 	}
 
-	public function setFromSubmit() {
+	public function setFromSubmit(): void {
 		foreach ($this->fields as $field) {
 			$field->setFromSubmit();
 		}
@@ -135,11 +143,11 @@ class Form implements JsonSerializable {
 		}
 	}
 
-	public function fieldExists($fieldName) {
+	public function fieldExists(string $fieldName): bool {
 		return isset($this->fields[$fieldName]);
 	}
 
-	public function getFieldByName($fieldName) {
+	public function getFieldByName(string$fieldName): Field {
 		if (isset($this->fields[$fieldName])) {
 			return $this->fields[$fieldName];
 		} else {
@@ -147,7 +155,7 @@ class Form implements JsonSerializable {
 		}
 	}
 
-	public function isSubmitted() {
+	public function isSubmitted(): bool {
 		if ($this->id) {
 			$formName = Input::getVar("form_" . $this->id, v::StringVal());
 			if ($formName) {
@@ -157,7 +165,7 @@ class Form implements JsonSerializable {
 		return false;
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		foreach ($this->fields as $field) {
 			if (!$field->validate()) {
 				return false;
@@ -166,6 +174,7 @@ class Form implements JsonSerializable {
 		return true;
 	}
 
+	// @phpstan-ignore missingType.iterableValue
 	public function getFailedValidationFields(): array {
 		$errors = [];
 		foreach ($this->fields as $name => $field) {
@@ -210,12 +219,12 @@ class Form implements JsonSerializable {
 		return $name_value_pairs;
 	}
 
-	public function serializeJson() {
-		return json_encode($this);
+	public function serializeJson(): string {
+		return json_encode($this, JSON_THROW_ON_ERROR);
 	}
 
-	public function deserializeJson($json) {
-		$json_obj = json_decode($json);
+	public function deserializeJson(string $json): void {
+		$json_obj = json_decode($json, false, 512, JSON_THROW_ON_ERROR);
 		if ($json_obj) {
 			foreach ($json_obj as $option) {
 				/*
@@ -226,6 +235,7 @@ class Form implements JsonSerializable {
 				*/
 				if ($option->name!=='error!!!' && $this->fieldExists($option->name)) {
 					$field = $this->getFieldByName($option->name); 
+					// @phpstan-ignore function.alreadyNarrowedType
 					if (is_object($field)) {
 						$field->default = $option->value;
 					}
@@ -237,7 +247,7 @@ class Form implements JsonSerializable {
 		}
 	}
 
-	public static function createEmailHtmlWrapper($body, $bannerImage) {
+	public static function createEmailHtmlWrapper(string $body, string $bannerImage): string {
 		ob_start();
 		?>
 			<div style='font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 16px; padding: 0; margin: 0;'>
@@ -265,10 +275,16 @@ class Form implements JsonSerializable {
 			</table>
 		</div>    
 		<?php
-		return ob_get_clean();
+		$output = ob_get_clean();
+
+		if(gettype($output)!="string") {
+			throw new Exception("Expected email wrapper output to be string");
+		}
+
+		return $output;
 	}
 
-	public function createEmailHtml($bannerImage) {
+	public function createEmailHtml(string $bannerImage): string {
 		ob_start();
 			echo "<h1 style='text-align: center;  font-size: 24px;'>$this->displayName submission</h1>";
 			foreach($this->fields as $field) {
@@ -276,10 +292,16 @@ class Form implements JsonSerializable {
 					echo "<p>" . $field->label . ": " . $field->getFriendlyValue((object)["return_in_text_html_form"=>true, "return_in_email_html_form"=>true]) . "<p>";
 				}
 			}
-		return $this->createEmailHtmlWrapper(ob_get_clean(), $bannerImage);
+		$output = ob_get_clean();
+
+		if(gettype($output)!="string") {
+			throw new Exception("Expected email body output to be string");
+		}
+
+		return $this->createEmailHtmlWrapper($output, $bannerImage);
 	}
 
-	public function display($repeatableTemplate=false) {
+	public function display(bool $repeatableTemplate=false): void {
 		
 		// first make sure array added to name if required
 		$aftername='';

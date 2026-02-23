@@ -6,15 +6,11 @@ Use HoltBosse\Form\Input;
 use Respect\Validation\Validator as v;
 
 class Textarea extends Field {
-
-	public $maxlength;
-	public $minlength;
-	public $select_options;
-	public $input_type;
+	public ?string $input_type = null;
 	#[FormBuilderAttribute(fieldType: "Input", dataType: FormBuilderDataType::String, required: false)]
-	public $placeholder; //yes this is re-declared from parent for form builder
+	public ?string $placeholder = null; //yes this is re-declared from parent for form builder
 
-	public function display() {
+	public function display(): void {
 		$hidden = "";
 		if (property_exists($this,'attribute_list')) {
 			$attributes = implode(' ',$this->attribute_list);
@@ -40,7 +36,7 @@ class Textarea extends Field {
 		echo "</div>";
 	}
 
-	public function getFriendlyValue($helpful_info) {
+	public function getFriendlyValue(mixed $helpful_info): mixed {
 		$output = $this->default;
 		$output = htmlspecialchars_decode($output); //due to some old junky filters, stuff was stored encoded, so decode it first
 
@@ -53,12 +49,12 @@ class Textarea extends Field {
 		}
 	}
 
-	public function setFromSubmit() {
+	public function setFromSubmit(): void {
 		parent::setFromSubmit();
 		$this->default = str_replace("\n","[NEWLINE]",$this->default);
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(mixed $config): self {
 		parent::loadFromConfig($config);
 		
 		$this->filter = $config->filter ?? V::StringVal();
@@ -67,7 +63,7 @@ class Textarea extends Field {
 		return $this;
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		// TODO: enhance validation
 		if ($this->isMissing()) {
 			return false;
