@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 // Mock Field class for registration
 test('Form loads fields from JSON and serializes correctly', function () {
 	// Register a mock field type
-	$mockFieldClass = new class {
+	$mockFieldClass = new class extends \HoltBosse\Form\Field {
 		public $name;
 		public $type = 'text';
 		public $label = 'Test Field';
@@ -76,7 +76,7 @@ test('Form loads fields from JSON and serializes correctly', function () {
 
 test('Form getFieldByName returns the correct field', function () {
 	// Register a mock field type
-	$mockFieldClass = new class {
+	$mockFieldClass = new class extends \HoltBosse\Form\Field {
 		public $name;
 		public $type = 'text';
 		public $label = 'Test Field';
