@@ -5,13 +5,10 @@ Use HoltBosse\Form\Field;
 use Respect\Validation\Validator as v;
 
 class Honeypot extends Field {
+	public bool $save = false;
+	public ?string $autocomplete = null;
 
-	public $html;
-	public $save;
-	public $maxlength;
-	public $autocomplete;
-
-	public function display() {
+	public function display(): void {
 		// autocomplete attribute set to nonsense which is calculated to be same as 'off' without being explicit
 		// tabindex is required as -1 for accessibility reasons, so might tip off some bots, but can't hurt screen readers etc
 		// set value to be ' ' (space) - allows us to use 'required' client-side, but whitespace might be more enticing to replace 
@@ -30,7 +27,7 @@ class Honeypot extends Field {
 		<?php
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(object $config): self {
 		parent::loadFromConfig($config);
 		
 		$this->filter = $config->filter ?? v::StringVal();
@@ -41,7 +38,7 @@ class Honeypot extends Field {
 		return $this;
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		if ($this->default!==" ") {
 			return false;
 		} else {

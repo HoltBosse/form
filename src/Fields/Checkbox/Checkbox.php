@@ -6,7 +6,7 @@ use Respect\Validation\Validator as v;
 
 class Checkbox extends Field {
 
-	public function display() {
+	public function display(): void {
 		echo "<div class='field'>";
 			echo "<label for='{$this->id}' class='checkbox'>";
 				echo "<input type='hidden' data-logicignore value='0' {$this->getRenderedName()} {$this->getRenderedForm()}>"; // ensure submitted value
@@ -23,7 +23,7 @@ class Checkbox extends Field {
 		echo "</div>";
 	}
 
-	public function getFriendlyValue($helpful_info) {
+	public function getFriendlyValue(mixed $helpful_info): mixed {
 		if($helpful_info && $helpful_info->return_in_text_form==true) {
 			if ($this->default==1) {
 				return "Checked";
@@ -39,7 +39,7 @@ class Checkbox extends Field {
 		}
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(object $config): self {
 		parent::loadFromConfig($config);
 		
 		$this->filter = $config->filter ?? v::IntVal();
@@ -47,7 +47,7 @@ class Checkbox extends Field {
 		return $this;
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		if ($this->isMissing()) {
 			return false;
 		}

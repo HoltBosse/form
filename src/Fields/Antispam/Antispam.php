@@ -10,34 +10,25 @@ use Respect\Validation\Validator as v;
 /* Note: this field does NOT currently support checking fields/names within a repeatable form section */
 class Antispam extends Field {
 
-	public $nowrap;
-	public $save;
-	public $blacklist_location;
-	public $use_blacklist;
+	public bool $nowrap = true;
+	public bool $save = false;
+	public ?string $blacklist_location = null;
+	public ?bool $use_blacklist = null;
 	#[FormBuilderAttribute(fieldType: "Input", dataType: FormBuilderDataType::LetterString, required: false, label: "Field Name to Check")]
-	public $fieldname;
+	public ?string $fieldname = null;
 	#[FormBuilderAttribute(fieldType: "Select", dataType: FormBuilderDataType::Bool, required: true)]
-	public $block_urls;
+	public ?bool $block_urls = null;
 	#[FormBuilderAttribute(fieldType: "Select", dataType: FormBuilderDataType::Bool, required: true, label: "Block Cyrillic characters")]
-	public $charset_check;
-	public $ends_with_ru_check;
+	public ?bool $charset_check = null;
+	public ?bool $ends_with_ru_check = null;
 	#[FormBuilderAttribute(fieldType: "Select", dataType: FormBuilderDataType::Bool, required: true, label: "Block BBCode URLs", description: "Blocks [url=...] BBCode tags bots like to use")]
-	public $bbcode_url_check;
+	public ?bool $bbcode_url_check = null;
 
-	function __construct($default_content="") {
-		$this->id = "";
-		$this->name = "";
-		$this->default = $default_content;
-		$this->nowrap = true;
-		$this->save=false;
-		$this->blacklist_location = null; // relative to CMS root
-	}
-
-	public function display() {
+	public function display(): void {
 		echo "<!-- https://giphy.com/gifs/artists-on-tumblr-foxadhd-xLhloTgdu7i92 -->";
 	}
 
-	public static function endsWithRu($string) {
+	public static function endsWithRu(mixed $string): bool {
 		$length = strlen($string);
 		$ruLength = strlen('.ru');
 		if ($length < $ruLength) {
@@ -48,7 +39,7 @@ class Antispam extends Field {
 		return $offsetString === '.ru';
 	}
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(object $config): self {
 		parent::loadFromConfig($config);
 
 		$this->filter = $config->filter ?? v::StringVal();
@@ -60,11 +51,12 @@ class Antispam extends Field {
 		$this->ends_with_ru_check = $config->ends_with_ru_check ?? false;
 		$this->bbcode_url_check = $config->bbcode_url_check ?? false;
 		$this->save = $config->save ?? false;
+		$this->nowrap = $config->nowrap ?? true;
 
 		return $this;
 	}
 
-	private function inBlacklist ($value) {
+	private function inBlacklist (mixed $value): bool {
 		// check blacklist file for value - case insensitive 
 		$inBlacklist = false;
 		if ($this->use_blacklist) {
@@ -75,6 +67,7 @@ class Antispam extends Field {
 
 					$search_string = strtolower($value);
 
+					// @phpstan-ignore argument.type
 					while (($line = fgets($file)) !== false) {
 						$words = explode(" ", $search_string);
 						foreach ($words as $word) {
@@ -92,7 +85,7 @@ class Antispam extends Field {
 		return $inBlacklist;
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		// safety net for repeatables
 		if ($this->in_repeatable_form ?? null) {
 			return true; // cannot determine if invalid for now, assume good

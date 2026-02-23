@@ -7,21 +7,22 @@ use HoltBosse\Form\Field;
 beforeEach(function () {
 	// Register a mock field type for testing
 	$mockFieldClass = new class extends Field {
-		public function loadFromConfig($config) {
+		public function loadFromConfig(object $config): self {
 			parent::loadFromConfig($config);
+			return $this;
 		}
-		public function validate() { 
+		public function validate(): bool { 
 			return isset($this->default) && !empty($this->default);
 		}
-		public function setFromSubmit() {
+		public function setFromSubmit(): void {
 			$_POST[$this->name] = $_POST[$this->name] ?? '';
 			parent::setFromSubmit();
 		}
-		public function setFromSubmitRepeatable($index = 0) {
+		public function setFromSubmitRepeatable($index = 0): void {
 			$arr_name = $this->name . '[]';
 			$this->default = $_POST[$arr_name][$index] ?? '';
 		}
-		public function display($repeatableTemplate = false) {
+		public function display($repeatableTemplate = false): void {
 			echo "<input type='text' name='{$this->name}' value='{$this->default}' />";
 		}
 	};

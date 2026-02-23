@@ -8,10 +8,11 @@ use Respect\Validation\Validator as v;
 class SubForm extends Field {
 	public string $form_path;
 	public Form $sub_form;
+	// @phpstan-ignore missingType.iterableValue
 	public array $forms;
 	public string $form_base_path = '';
 
-	public function generateRepeatButtons() {
+	public function generateRepeatButtons(): void {
 		?>
 			<button type='button' onclick='this.closest(".subform").remove();' class='sf_close button btn pull-right is-warning remove_repeater'>-</button>
 			<button type='button' class='sf_up button btn pull-right is-info remove_repeater'>^</button>
@@ -19,7 +20,7 @@ class SubForm extends Field {
 		<?php
 	}
 
-	public function display() {
+	public function display(): void {
 		$subFormRootClass = 'subform_field_' . uniqid();
 
 		$saved_data = json_decode($this->default);
@@ -41,7 +42,7 @@ class SubForm extends Field {
 				foreach ($saved_data as $repeatable_index=>$repeatable_form_data) {
 					// load form
 					$repeatable_form = new Form($this->form_base_path . $this->form_path, true); // second parameter is boolean for repeatable or not
-					$repeatable_form->deserializeJson(json_encode($repeatable_form_data));
+					$repeatable_form->deserializeJson(json_encode($repeatable_form_data, JSON_THROW_ON_ERROR));
 					?>
 					<div class='subform'>
 						<?php
@@ -50,6 +51,10 @@ class SubForm extends Field {
 							ob_start();
 								$repeatable_form->display();
 							$rform_contents = ob_get_clean();
+
+							if(gettype($rform_contents)!="string") {
+								throw new \Exception("Expected form display output to be string");
+							}
 
 							$rform_contents = str_replace("{{repeatable_id_suffix}}", uniqid(), $rform_contents);
 							$rform_contents = str_replace("{{replace_with_index}}", $repeatable_index, $rform_contents);
@@ -141,7 +146,7 @@ class SubForm extends Field {
 		<?php
 	}
 
-	public function setFromSubmit() {
+	public function setFromSubmit(): void {
 		// create base repeatable form
 		$forms=[];
 		$repeatable_form = new Form($this->form_base_path . $this->form_path, true); // must be true / repeatable
@@ -171,7 +176,7 @@ class SubForm extends Field {
 	}
 
 
-	public function loadFromConfig($config) {
+	public function loadFromConfig(object $config): self {
 		parent::loadFromConfig($config);
 		
 		$this->form_path = $config->form_path ?? '';
@@ -179,7 +184,7 @@ class SubForm extends Field {
 		return $this;
 	}
 
-	public function validate() {
+	public function validate(): bool {
 		// assume $this->forms has been set by set_from_submit
 		$all_valid=true;
 		foreach ($this->forms as $subform) {
