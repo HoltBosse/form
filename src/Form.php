@@ -147,7 +147,7 @@ class Form implements JsonSerializable {
 		return isset($this->fields[$fieldName]);
 	}
 
-	public function getFieldByName(string$fieldName): Field {
+	public function getFieldByName(string $fieldName): Field {
 		if (isset($this->fields[$fieldName])) {
 			return $this->fields[$fieldName];
 		} else {

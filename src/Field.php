@@ -27,7 +27,7 @@ class Field {
 	public bool $save = true;
 	public ?string $placeholder = null;
 	public bool $nowrap = false;
-	public ?string $form = null;
+	public mixed $form = null;
 	public ?int $index = null; // used to determine POST/GET array index in repeatables
 
 	public function display(): void {
