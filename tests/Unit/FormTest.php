@@ -181,3 +181,124 @@ test('Form createEmailHtml generates correct HTML', function () {
 	unlink($jsonPath);
 	unset($_SERVER['SERVER_NAME']);
 });
+
+test('Form validates successfully with a valid CSRF token', function () {
+	if (session_status() !== PHP_SESSION_ACTIVE) {
+		session_start();
+	}
+	$_SESSION = [];
+	$_POST = [];
+	$_GET = [];
+
+	\HoltBosse\Form\Form::registerField('FormTestCsrfValidFakeText', MockTextField::class);
+
+	$formJson = [
+		'id' => 'csrf_valid_form',
+		'display_name' => 'CSRF Valid Form',
+		'fields' => [
+			(object)[
+				'type' => 'FormTestCsrfValidFakeText',
+				'name' => 'field1',
+				'label' => 'Field 1',
+			]
+		]
+	];
+
+	$jsonPath = __DIR__ . '/csrf_valid_form.json';
+	file_put_contents($jsonPath, json_encode($formJson));
+	$form = new Form($jsonPath);
+
+	ob_start();
+	$form->display();
+	$output = ob_get_clean();
+
+	preg_match("/name='csrf_csrf_valid_form' value='([^']+)'|value='([^']+)' name='csrf_csrf_valid_form'/", (string) $output, $matches);
+	$token = $matches[1] ?: ($matches[2] ?? null);
+
+	expect($token)->not()->toBeNull();
+
+	$_POST['form_csrf_valid_form'] = '1';
+	$_POST['csrf_csrf_valid_form'] = $token;
+
+	expect($form->isSubmitted())->toBe(true);
+	expect($form->validate())->toBe(true);
+
+	unlink($jsonPath);
+});
+
+test('Form validation fails when CSRF token is missing', function () {
+	if (session_status() !== PHP_SESSION_ACTIVE) {
+		session_start();
+	}
+	$_SESSION = [];
+	$_POST = [];
+	$_GET = [];
+
+	\HoltBosse\Form\Form::registerField('FormTestCsrfMissingFakeText', MockTextField::class);
+
+	$formJson = [
+		'id' => 'csrf_missing_form',
+		'display_name' => 'CSRF Missing Form',
+		'fields' => [
+			(object)[
+				'type' => 'FormTestCsrfMissingFakeText',
+				'name' => 'field1',
+				'label' => 'Field 1',
+			]
+		]
+	];
+
+	$jsonPath = __DIR__ . '/csrf_missing_form.json';
+	file_put_contents($jsonPath, json_encode($formJson));
+	$form = new Form($jsonPath);
+
+	ob_start();
+	$form->display();
+	ob_end_clean();
+
+	$_POST['form_csrf_missing_form'] = '1';
+
+	expect($form->isSubmitted())->toBe(true);
+	expect($form->validate())->toBe(false);
+
+	unlink($jsonPath);
+});
+
+test('Form validation fails when CSRF token is invalid', function () {
+	if (session_status() !== PHP_SESSION_ACTIVE) {
+		session_start();
+	}
+	$_SESSION = [];
+	$_POST = [];
+	$_GET = [];
+
+	\HoltBosse\Form\Form::registerField('FormTestCsrfInvalidFakeText', MockTextField::class);
+
+	$formJson = [
+		'id' => 'csrf_invalid_form',
+		'display_name' => 'CSRF Invalid Form',
+		'fields' => [
+			(object)[
+				'type' => 'FormTestCsrfInvalidFakeText',
+				'name' => 'field1',
+				'label' => 'Field 1',
+			]
+		]
+	];
+
+	$jsonPath = __DIR__ . '/csrf_invalid_form.json';
+	file_put_contents($jsonPath, json_encode($formJson));
+	$form = new Form($jsonPath);
+
+	ob_start();
+	$form->display();
+	ob_end_clean();
+
+	$_POST['form_csrf_invalid_form'] = '1';
+	$_POST['csrf_csrf_invalid_form'] = 'not_the_real_token';
+
+	expect($form->isSubmitted())->toBe(true);
+	expect($form->validate())->toBe(false);
+
+	unlink($jsonPath);
+});

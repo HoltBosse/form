@@ -14,6 +14,7 @@ class Form implements JsonSerializable {
 	public mixed $json;
 	public mixed $repeatable;
 	public mixed $formPath;
+	public bool $csrfEnabled = true;
 
 	// @phpstan-ignore missingType.iterableValue
 	private static array $fieldRegistry = [];
@@ -44,6 +45,7 @@ class Form implements JsonSerializable {
 			$tempfields = $obj->fields;
 			$this->id = $obj->id;
 			$this->displayName = isset($obj->display_name) ? $obj->display_name : $this->id;
+			$this->csrfEnabled = isset($obj->csrf_enabled) ? $obj->csrf_enabled : true;
 			
 			foreach ($tempfields as $field_config) {
 				if(!self::$fieldRegistry[$field_config->type]) {
@@ -166,12 +168,78 @@ class Form implements JsonSerializable {
 	}
 
 	public function validate(): bool {
+		if (!$this->isCsrfValid()) {
+			return false;
+		}
+
 		foreach ($this->fields as $field) {
 			if (!$field->validate()) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	public function getCsrfFieldName(): string {
+		return 'csrf_' . $this->id;
+	}
+
+	public function getCsrfToken(): string {
+		$sessionStarted = $this->ensureSessionStarted();
+		if (!$sessionStarted) {
+			return '';
+		}
+
+		$csrfSessionKey = $this->getCsrfSessionKey();
+		if (!isset($_SESSION[$csrfSessionKey]) || !is_string($_SESSION[$csrfSessionKey]) || $_SESSION[$csrfSessionKey] === '') {
+			$_SESSION[$csrfSessionKey] = bin2hex(random_bytes(32));
+		}
+
+		return $_SESSION[$csrfSessionKey];
+	}
+
+	public function isCsrfValid(): bool {
+		if (!$this->csrfEnabled || $this->repeatable) {
+			return true;
+		}
+
+		if (!$this->isSubmitted()) {
+			return false;
+		}
+
+		$sessionStarted = $this->ensureSessionStarted();
+		if (!$sessionStarted) {
+			return false;
+		}
+
+		$sessionToken = $_SESSION[$this->getCsrfSessionKey()] ?? null;
+		$submittedToken = Input::getVar($this->getCsrfFieldName(), v::StringVal());
+
+		if (!is_string($sessionToken) || !is_string($submittedToken)) {
+			return false;
+		}
+
+		if ($sessionToken === '' || $submittedToken === '') {
+			return false;
+		}
+
+		return hash_equals($sessionToken, $submittedToken);
+	}
+
+	private function getCsrfSessionKey(): string {
+		return 'holtbosse_form_csrf_' . $this->id;
+	}
+
+	private function ensureSessionStarted(): bool {
+		if (session_status() === PHP_SESSION_ACTIVE) {
+			return true;
+		}
+
+		if (headers_sent()) {
+			return false;
+		}
+
+		return session_start();
 	}
 
 	// @phpstan-ignore missingType.iterableValue
@@ -346,6 +414,10 @@ class Form implements JsonSerializable {
 				}
 			}
 			echo "<input type='hidden' value='1' name='form_" . $this->id . "{$aftername}'>";
+			if (!$this->repeatable && $this->csrfEnabled) {
+				$csrfToken = Input::stringHtmlSafe($this->getCsrfToken());
+				echo "<input type='hidden' value='{$csrfToken}' name='" . $this->getCsrfFieldName() . "'>";
+			}
 		
 		echo "</div>";
 
