@@ -486,10 +486,16 @@ class Form implements JsonSerializable {
 							const actualNamedEl = el.querySelector(`#${el.dataset.field_id}`);
 
 							if(evaluateFieldLogic(form, JSON.parse(el.dataset.logic), el)) {
-								actualNamedEl.required = isRequired;
+								if (actualNamedEl) {
+									// subforms/repeatables, or some custom fields may not have a directly associated (single) id element
+									// so just handle visibility of container for now
+									actualNamedEl.required = isRequired;
+								}
 								el.classList.remove("logic_hide");
 							} else {
-								actualNamedEl.required = false;
+								if (actualNamedEl) {
+									actualNamedEl.required = false;
+								}
 								el.classList.add("logic_hide");
 							}
 						});
