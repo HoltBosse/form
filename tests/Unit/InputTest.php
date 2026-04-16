@@ -20,6 +20,18 @@ describe('Input', function () {
 			expect(Input::stringURLSafe('foo   bar---baz'))
 				->toBe('foo-bar-baz');
 		});
+		it('handles possible double dashes', function () {
+			expect(Input::stringURLSafe('foo & bar'))
+				->toBe('foo-bar');
+		});
+		it('handles possible trailing dashes', function () {
+			expect(Input::stringURLSafe('foo & bar &'))
+				->toBe('foo-bar');
+		});
+		it('handles possible leading dashes', function () {
+			expect(Input::stringURLSafe('& foo & bar'))
+				->toBe('foo-bar');
+		});
 	});
 
 	describe('::stringHtmlSafe', function () {
