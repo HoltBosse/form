@@ -23,11 +23,11 @@ class Input {
 		$str = trim($str);
 		
 		// remove any duplicate whitespace, and ensure all characters are alphanumeric
-		$str = preg_replace(['/\s+/','/[^A-Za-z0-9\-]/'], ['-',''], $str);
+		$str = preg_replace(['/\s+/','/[^A-Za-z0-9\-]/','/-+/'], ['-','','-'], $str);
 
 		// lowercase and trim
 		// @phpstan-ignore argument.type
-		$str = trim(strtolower($str));
+		$str = trim(strtolower($str), ' -');
 		return $str;
 	}
 
