@@ -1587,11 +1587,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.48",
+            "version": "2.2.3",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/231397213efb7c0a066ee024b5c3c87f2d3adfa0",
-                "reference": "231397213efb7c0a066ee024b5c3c87f2d3adfa0",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/4048833dd47b377287818841877fb3087289509c",
+                "reference": "4048833dd47b377287818841877fb3087289509c",
                 "shasum": ""
             },
             "require": {
@@ -1613,6 +1613,17 @@
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ondřej Mirtes"
+                },
+                {
+                    "name": "Markus Staab"
+                },
+                {
+                    "name": "Vincent Langlet"
+                }
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
             "keywords": [
@@ -1636,7 +1647,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-04-15T20:24:19+00:00"
+            "time": "2026-06-30T21:15:26+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
